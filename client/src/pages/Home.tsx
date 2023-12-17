@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import img1 from '../assets/images/img1.webp'; 
+import axios from 'axios';
 
 const Home = () => {
 
@@ -20,6 +21,12 @@ const Home = () => {
       { id: 4, category: 'Laptop', name: 'Product 4', image: img1, price: '$999' },
       // Add more product data for different categories
     ];
+
+    useEffect(() => {
+      axios.get('http://localhost:5000/api/products')
+        .then(response => console.log(response.data))
+        .catch(error => console.error('Error fetching products:', error));
+    }, []);
 
   return (
     <div>
