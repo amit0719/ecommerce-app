@@ -1,10 +1,25 @@
-import express from "express";
+import dotenv from "dotenv"
+import express from "express"; 
+import connectDB from "./utils/db";
+
+
+dotenv.config()
+
+//database config
+
+//connectDB();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT;
+
+app.use(express.json());
+
+
+
+
 
 app.get("/",(req, res)=>{
-    res.send('Hellow')
+    res.send('Hello world')
 })
 
 app.listen(port,()=>{
