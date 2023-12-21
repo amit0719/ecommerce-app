@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
 import { Search, AccountCircle, ShoppingCart } from "@mui/icons-material";
 import CategoriesNavigation from "./CategoriesNavigation";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -9,7 +10,7 @@ const Header = () => {
         <Toolbar>
           {/* App Logo */}
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Your App Name
+            App Name
           </Typography>
 
           {/* Search with Logo */}
@@ -32,14 +33,17 @@ const Header = () => {
 
           {/* Cart with Icon */}
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="body1" style={{ marginRight: 10 }}>
-              Cart
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <ShoppingCart />
-              </Badge>
-            </IconButton>
+            <Link to={"cart"}>
+              <Typography variant="body1" style={{ marginRight: 10 }}>
+                Cart
+              </Typography>
+
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
+                  <ShoppingCart />
+                </Badge>
+              </IconButton>
+            </Link>
           </div>
         </Toolbar>
       </AppBar>

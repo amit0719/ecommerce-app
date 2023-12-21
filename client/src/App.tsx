@@ -17,8 +17,7 @@ function App() {
     <div className="App">
       <Router>
         <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
+          <Routes> 
             <Route path="/" element={<Home />} />
             <Route path="products" element={<ProductListing />} />
             {/* <Route   path="products/:id" element={<ProductDetail/>} /> */}

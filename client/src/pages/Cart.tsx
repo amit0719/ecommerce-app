@@ -1,26 +1,59 @@
-import React from 'react';
+import {
+  IconButton,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const Cart = () => {
-  // Fetch cart items or use dummy data
+// todo { cartItems }: any
+
+const CartPage = () => {
   const cartItems = [
-    { id: 1, name: 'Product 1', price: '$10', quantity: 2 },
-    { id: 2, name: 'Product 2', price: '$20', quantity: 1 },
-    // ...more cart items
+    {
+      id: 1,
+      name: "T-shirt",
+      price: 19.99,
+    },
+    {
+      id: 2,
+      name: "Smartphone",
+      price: 399.99,
+    },
   ];
+
+  const getTotalPrice = () => {
+    let total = 0;
+    cartItems.forEach((item: any) => {
+      total += item.price;
+    });
+    return total;
+  };
 
   return (
     <div>
-      <h2>Shopping Cart</h2>
-      <ul>
-        {cartItems.map((item) => (
-          <li key={item.id}>
-            {item.name} - {item.price} - Quantity: {item.quantity}
-          </li>
+      <Typography variant="h4" gutterBottom>
+        Cart
+      </Typography>
+      <List>
+        {cartItems.map((item: any) => (
+          <ListItem key={item.id}>
+            <ListItemText primary={item.name} secondary={`$${item.price}`} />
+            <ListItemSecondaryAction>
+              <IconButton edge="end" aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         ))}
-      </ul>
-      {/* Checkout button, total price calculation, etc. */}
+      </List>
+      <Typography variant="h6" gutterBottom>
+        Total Price: ${getTotalPrice()}
+      </Typography>
     </div>
   );
 };
 
-export default Cart;
+export default CartPage;
