@@ -1,54 +1,79 @@
-import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
-import { Search, AccountCircle, ShoppingCart } from "@mui/icons-material";
-import CategoriesNavigation from "./CategoriesNavigation";
-import { Link } from "react-router-dom";
+
+import { Link } from 'react-router-dom';
 
 const Header = () => {
+  // Dummy data for the cart count
+  const cartItemCount = 5; // Replace with your actual count from cart data
+
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          {/* App Logo */}
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            App Name
-          </Typography>
+    <header>
+      {/* First section */}
+      <div className="bg-light py-2">
+        <div className="container d-flex justify-content-between align-items-center">
+          {/* App name */}
+          <h1 className="mb-0">Your App Name</h1>
 
-          {/* Search with Logo */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Search />
+          {/* Search bar */}
+          <form className="form-inline">
             <input
-              type="text"
-              placeholder="Search..."
-              style={{ marginLeft: 8 }}
+              className="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
             />
-          </div>
+            <button className="btn btn-outline-primary" type="submit">
+              Search
+            </button>
+          </form>
 
-          {/* Login/Register with User Icon */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="body1">Login</Typography>
-            <IconButton color="inherit">
-              <AccountCircle />
-            </IconButton>
-          </div>
+          {/* Login button */}
+          <Link to="/login" className="btn btn-primary ml-2">
+            Login
+          </Link>
 
-          {/* Cart with Icon */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Link to={"cart"}>
-              <Typography variant="body1" style={{ marginRight: 10 }}>
-                Cart
-              </Typography>
+          {/* Cart icon with count */}
+          <Link to="/cart" className="btn btn-light ml-2">
+            <i className="fas fa-shopping-cart"></i> Cart{' '}
+            <span className="badge badge-danger">{cartItemCount}</span>
+          </Link>
+        </div>
+      </div>
 
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <ShoppingCart />
-                </Badge>
-              </IconButton>
-            </Link>
+      {/* Second section - Navigation bar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container">
+          {/* Navbar brand */}
+          <Link className="navbar-brand" to="/">E-commerce</Link>
+
+          {/* Navbar toggler for mobile */}
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          {/* Navbar links */}
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ml-auto">
+              {/* Add your category links */}
+              <li className="nav-item">
+                <Link className="nav-link" to="/category1">Category 1</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/category2">Category 2</Link>
+              </li>
+              {/* Add more category links */}
+            </ul>
           </div>
-        </Toolbar>
-      </AppBar>
-      <CategoriesNavigation />
-    </>
+        </div>
+      </nav>
+    </header>
   );
 };
 
