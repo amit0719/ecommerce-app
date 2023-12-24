@@ -14,8 +14,15 @@ export const appData = {
       name: "T-shirt",
       category: "Fashion",
       price: 19.99,
-      description: "Comfortable cotton t-shirt in various colors.",
+      description:
+        "You can complete your tasks rapidly with the HP 15s Laptop. Owing to its high resolution and sophisticated display of colours, this laptop delivers an immersive and authentic viewing experience with up to 2 million pixels. In addition, thanks to its AMD processors and graphics card, this laptop allows you to get your work done quickly, thereby saving time. Also, you can browse through various applications, effortlessly do your work, make music, and more with this laptop.",
       imageUrl: proImage,
+      details: ["Detail 1", "Detail 2", "Detail 3"],
+      averageRating: 4.5,
+      reviewsCount: 20,
+      recommendedProducts: [],
+      discountPrice: 10,
+      additionalImages: [proImage, proImage, proImage],
     },
     {
       id: 2,
