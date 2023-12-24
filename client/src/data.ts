@@ -1,4 +1,4 @@
-import proImage from "./assets/images/img1.webp";
+import proImage from "./assets/images/laptopImg.jpg";
 
 export const appData = {
   categories: [
