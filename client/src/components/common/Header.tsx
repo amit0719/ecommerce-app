@@ -1,79 +1,49 @@
-
-import { Link } from 'react-router-dom';
+import React from "react";
 
 const Header = () => {
-  // Dummy data for the cart count
-  const cartItemCount = 5; // Replace with your actual count from cart data
-
   return (
-    <header>
-      {/* First section */}
-      <div className="bg-light py-2">
-        <div className="container d-flex justify-content-between align-items-center">
-          {/* App name */}
-          <h1 className="mb-0">Your App Name</h1>
-
-          {/* Search bar */}
-          <form className="form-inline">
-            <input
-              className="form-control mr-sm-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-primary" type="submit">
-              Search
-            </button>
-          </form>
-
-          {/* Login button */}
-          <Link to="/login" className="btn btn-primary ml-2">
-            Login
-          </Link>
-
-          {/* Cart icon with count */}
-          <Link to="/cart" className="btn btn-light ml-2">
-            <i className="fas fa-shopping-cart"></i> Cart{' '}
-            <span className="badge badge-danger">{cartItemCount}</span>
-          </Link>
+    <div className="container-fluid bg-dark py-4">
+      <div className="row align-items-center">
+        {/* Brand name */}
+        <div className="col-md-4 text-center text-md-left">
+          <h1 className="m-0 text-white">Electro</h1>
         </div>
-      </div>
 
-      {/* Second section - Navigation bar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container">
-          {/* Navbar brand */}
-          <Link className="navbar-brand" to="/">E-commerce</Link>
+        {/* Search component */}
+        <div className="col-md-4 text-center">
+          {/* Replace this input with your search component */}
+          <input type="text" className="form-control" placeholder="Search..." />
+        </div>
 
-          {/* Navbar toggler for mobile */}
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          {/* Navbar links */}
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ml-auto">
-              {/* Add your category links */}
-              <li className="nav-item">
-                <Link className="nav-link" to="/category1">Category 1</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/category2">Category 2</Link>
-              </li>
-              {/* Add more category links */}
-            </ul>
+        {/* User login */}
+        <div className="col-md-2 text-center">
+          <div className="text-white">
+            <i className="fas fa-user-circle fa-2x"></i>
+            <p className="m-0">Login</p>
           </div>
         </div>
-      </nav>
-    </header>
+
+        {/* Cart */}
+        <div className="col-md-2 text-center d-flex align-items-center">
+          <div className="text-white position-relative">
+            <i className="fas fa-shopping-cart fa-2x"></i>
+            <p className="m-0">Your Cart</p>
+            {/* Cart count badge */}
+            <span
+              className="badge badge-pill badge-danger position-absolute"
+              style={{
+                top: "-8px",
+                right: "-8px",
+                color: "#FFF",
+                backgroundColor: "#D10024",
+              }}
+            >
+              3
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
