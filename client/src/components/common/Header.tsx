@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -16,10 +17,13 @@ const Header = () => {
         </div>
 
         {/* User login */}
+
         <div className="col-md-2 text-center">
           <div className="text-white">
             <i className="fas fa-user-circle fa-2x"></i>
-            <p className="m-0">Login</p>
+            <Link to={"login"}>
+              <p className="m-0">Login</p>
+            </Link>
           </div>
         </div>
 
