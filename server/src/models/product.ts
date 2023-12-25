@@ -1,26 +1,53 @@
-import { Schema, model, InferSchemaType } from 'mongoose';
+import { Schema, model, InferSchemaType } from "mongoose";
 
 const productSchema: Schema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
-  amount: {
+  price: {
     type: Number,
-    required: true
+    required: true,
   },
   image_url: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  stock: {
+    type: Number,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  discountedPrice: Number,
+  discountStartDate: Date,
+  discountEndDate: Date,
+  isDiscounted: {
+    type: Boolean,
+    default: false,
+  },
+  isNewProduct: {
+    type: Boolean,
+    default: false,
+  },
+  newStartDate: Date,
+  newEndDate: Date,
+  ratings: [
+    {
+      rating: Number,
+      count: Number,
+    },
+  ],
 });
 
 export type IProduct = InferSchemaType<typeof productSchema>;
 
-const Product = model<IProduct>('Product', productSchema);
+const Product = model<IProduct>("Product", productSchema);
 
 export default Product;
