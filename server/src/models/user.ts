@@ -1,43 +1,23 @@
-import { Schema, model } from "mongoose";
+import { Schema, Document, model } from "mongoose";
 
-const userSchema = new Schema(
-  {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-    cart: [
-      {
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
-      },
-    ],
-  },
-  { timestamps: true }
-);
+export interface User extends Document {
+  username: string;
+  password: string;
+  email: string;
+  phone: number;
+  address: string;
+  otp: string | null;
+  otpExpiration: Date | null;
+}
 
-const User = model("User", userSchema);
+const UserSchema: Schema = new Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String },
+  address: { type: String },
+  otp: { type: String, default: null },
+  otpExpiration: { type: Date, default: null },
+});
 
-export default User;
+export default model<User>("User", UserSchema);

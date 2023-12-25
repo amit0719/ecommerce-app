@@ -6,6 +6,7 @@ import userRoutes from "./routes/users";
 import cartRoutes from "./routes/carts";
 import categoryRoutes from "./routes/categories";
 import orderRoutes from "./routes/orders";
+import authRoutes from "./routes/auth";
 
 dotenv.config({ path: "./.env" });
 
@@ -14,7 +15,6 @@ dotenv.config({ path: "./.env" });
 connectDB();
 
 const app = express();
-
 const port = process.env.PORT;
 
 app.use(express.json());
@@ -24,6 +24,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello world");
