@@ -20,7 +20,7 @@ export const login = (userData: any) => {
     try {
       const response = await axios.post("/api/auth/login", userData);
       dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
-    } catch (error) {
+    } catch (error: any) {
       dispatch({ type: "LOGIN_FAILURE", payload: error.response.data });
     }
   };
