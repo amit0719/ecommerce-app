@@ -1,0 +1,42 @@
+// Auth actions
+export const REGISTER_REQUEST = "REGISTER_REQUEST";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAILURE = "REGISTER_FAILURE";
+
+export const LOGIN_REQUEST = "LOGIN_REQUEST";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAILURE = "LOGIN_FAILURE";
+
+export const VERIFY_OTP_REQUEST = "VERIFY_OTP_REQUEST";
+export const VERIFY_OTP_SUCCESS = "VERIFY_OTP_SUCCESS";
+export const VERIFY_OTP_FAILURE = "VERIFY_OTP_FAILURE";
+
+export const LOGOUT = "LOGOUT";
+
+// Users actions
+export const FETCH_USERS_REQUEST = "FETCH_USERS_REQUEST";
+export const FETCH_USERS_SUCCESS = "FETCH_USERS_SUCCESS";
+export const FETCH_USERS_FAILURE = "FETCH_USERS_FAILURE";
+
+// ... Other user-related actions
+
+// Products actions
+export const FETCH_PRODUCTS_REQUEST = "FETCH_PRODUCTS_REQUEST";
+export const FETCH_PRODUCTS_SUCCESS = "FETCH_PRODUCTS_SUCCESS";
+export const FETCH_PRODUCTS_FAILURE = "FETCH_PRODUCTS_FAILURE";
+
+// ... Other product-related actions
+
+// Cart actions
+export const FETCH_CART_ITEMS_REQUEST = "FETCH_CART_ITEMS_REQUEST";
+export const FETCH_CART_ITEMS_SUCCESS = "FETCH_CART_ITEMS_SUCCESS";
+export const FETCH_CART_ITEMS_FAILURE = "FETCH_CART_ITEMS_FAILURE";
+
+// ... Other cart-related actions
+
+// Category actions
+export const FETCH_CATEGORIES_REQUEST = "FETCH_CATEGORIES_REQUEST";
+export const FETCH_CATEGORIES_SUCCESS = "FETCH_CATEGORIES_SUCCESS";
+export const FETCH_CATEGORIES_FAILURE = "FETCH_CATEGORIES_FAILURE";
+
+// ... Other category-related actions

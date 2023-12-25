@@ -1,0 +1,47 @@
+import axios from "axios";
+
+// Register user action
+export const register = (userData: any) => {
+  return async (dispatch: any) => {
+    dispatch({ type: "REGISTER_REQUEST" });
+    try {
+      const response = await axios.post("/api/auth/register", userData);
+      dispatch({ type: "REGISTER_SUCCESS", payload: response.data });
+    } catch (error: any) {
+      dispatch({ type: "REGISTER_FAILURE", payload: error.response.data });
+    }
+  };
+};
+
+// Login action
+export const login = (userData: any) => {
+  return async (dispatch: any) => {
+    dispatch({ type: "LOGIN_REQUEST" });
+    try {
+      const response = await axios.post("/api/auth/login", userData);
+      dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+    } catch (error) {
+      dispatch({ type: "LOGIN_FAILURE", payload: error.response.data });
+    }
+  };
+};
+
+// Verify OTP action
+export const verifyOTP = (otpData: any) => {
+  return async (dispatch: any) => {
+    dispatch({ type: "VERIFY_OTP_REQUEST" });
+    try {
+      const response = await axios.post("/api/auth/verifyOTP", otpData);
+      dispatch({ type: "VERIFY_OTP_SUCCESS", payload: response.data });
+    } catch (error: any) {
+      dispatch({ type: "VERIFY_OTP_FAILURE", payload: error.response.data });
+    }
+  };
+};
+
+// Logout action
+export const logout = () => {
+  return {
+    type: "LOGOUT",
+  };
+};
