@@ -3,6 +3,7 @@ import express from "express";
 import connectDB from "./utils/db";
 import productRoutes from "./routes/products";
 import userRoutes from "./routes/users";
+import cartRoutes from "./routes/carts";
 
 dotenv.config({ path: "./.env" });
 
@@ -16,8 +17,9 @@ const port = process.env.PORT;
 
 app.use(express.json());
 
-app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/carts", cartRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello world");

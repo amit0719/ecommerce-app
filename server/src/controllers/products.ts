@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Product, { IProduct } from "../models/product";
-import { fakeProducts } from "../../data/productData";
 
 export const getAllProducts = async (
   req: Request,
