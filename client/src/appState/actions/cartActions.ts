@@ -1,11 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../../services/axios/axiosInstance";
 
 // Fetch cart items action
 export const fetchCartItems = () => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_CART_ITEMS_REQUEST" });
     try {
-      const response = await axios.get("/api/carts");
+      const response = await axiosInstance.get("/api/carts");
       dispatch({ type: "FETCH_CART_ITEMS_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({
@@ -21,7 +21,7 @@ export const addToCart = (itemData: any) => {
   return async (dispatch: any) => {
     dispatch({ type: "ADD_TO_CART_REQUEST" });
     try {
-      const response = await axios.post("/api/carts/add", itemData);
+      const response = await axiosInstance.post("/api/carts/add", itemData);
       dispatch({ type: "ADD_TO_CART_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({ type: "ADD_TO_CART_FAILURE", payload: error.response.data });
@@ -34,7 +34,7 @@ export const removeFromCart = (itemId: any) => {
   return async (dispatch: any) => {
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
-      await axios.post("/api/carts/remove", { itemId });
+      await axiosInstance.post("/api/carts/remove", { itemId });
       dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: itemId });
     } catch (error: any) {
       dispatch({
@@ -50,7 +50,7 @@ export const updateCartItem = (itemId: any, updatedItemData: any) => {
   return async (dispatch: any) => {
     dispatch({ type: "UPDATE_CART_ITEM_REQUEST" });
     try {
-      const response = await axios.post("/api/carts/update", {
+      const response = await axiosInstance.post("/api/carts/update", {
         itemId,
         updatedItemData,
       });

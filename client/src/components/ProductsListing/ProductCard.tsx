@@ -12,7 +12,6 @@ const ProductCard = ({ product }: any) => {
     rating = 4,
   } = product;
 
-  console.log("hey prooduct", product);
   return (
     <div className="col-md-4 mb-4">
       <Link

@@ -1,11 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../../services/axios/axiosInstance";
 
 // Fetch all products action
 export const fetchAllProducts = () => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_PRODUCTS_REQUEST" });
     try {
-      const response = await axios.get("/api/products");
+      const response = await axiosInstance.get("/products");
       dispatch({ type: "FETCH_PRODUCTS_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({
@@ -21,7 +21,7 @@ export const fetchProductById = (productId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_PRODUCT_REQUEST" });
     try {
-      const response = await axios.get(`/api/products/${productId}`);
+      const response = await axiosInstance.get(`/api/products/${productId}`);
       dispatch({ type: "FETCH_PRODUCT_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({ type: "FETCH_PRODUCT_FAILURE", payload: error.response.data });
@@ -34,7 +34,7 @@ export const fetchProductById = (productId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "CREATE_PRODUCT_REQUEST" });
 //     try {
-//       const response = await axios.post("/api/products", productData);
+//       const response = await axiosInstance.post("/api/products", productData);
 //       dispatch({ type: "CREATE_PRODUCT_SUCCESS", payload: response.data });
 //     } catch (error) {
 //       dispatch({
@@ -50,7 +50,7 @@ export const fetchProductById = (productId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "UPDATE_PRODUCT_REQUEST" });
 //     try {
-//       const response = await axios.put(
+//       const response = await axiosInstance.put(
 //         `/api/products/${productId}`,
 //         updatedProductData
 //       );
@@ -69,7 +69,7 @@ export const fetchProductById = (productId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "DELETE_PRODUCT_REQUEST" });
 //     try {
-//       await axios.delete(`/api/products/${productId}`);
+//       await axiosInstance.delete(`/api/products/${productId}`);
 //       dispatch({ type: "DELETE_PRODUCT_SUCCESS", payload: productId });
 //     } catch (error) {
 //       dispatch({
