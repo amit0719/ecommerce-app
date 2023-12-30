@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -7,7 +6,9 @@ const Header = () => {
       <div className="row align-items-center">
         {/* Brand name */}
         <div className="col-md-4 text-center text-md-left">
-          <h1 className="m-0 text-white">Electro</h1>
+          <Link className="nav-link" to={"/"}>
+            <h1 className="m-0 text-white">Electro</h1>
+          </Link>
         </div>
 
         {/* Search component */}
@@ -21,7 +22,7 @@ const Header = () => {
         <div className="col-md-2 text-center">
           <div className="text-white">
             <i className="fas fa-user-circle fa-2x"></i>
-            <Link to={"login"}>
+            <Link className="text-decoration-none text-reset" to={"login"}>
               <p className="m-0">Login</p>
             </Link>
           </div>
@@ -31,7 +32,9 @@ const Header = () => {
         <div className="col-md-2 text-center d-flex align-items-center">
           <div className="text-white position-relative">
             <i className="fas fa-shopping-cart fa-2x"></i>
-            <p className="m-0">Your Cart</p>
+            <Link className="text-decoration-none text-reset" to={"cart"}>
+              <p className="m-0">Your Cart</p>
+            </Link>
             {/* Cart count badge */}
             <span
               className="badge badge-pill badge-danger position-absolute"

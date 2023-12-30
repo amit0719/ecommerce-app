@@ -1,23 +1,52 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login, verifyOTP } from "../appState/actions/authActions";
 
 const Authentication = () => {
+  const dispatch: any = useDispatch();
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [otp, setOtp] = useState(null);
+
+  const isAuthenticated = useSelector(
+    (state: any) => state.auth.isAuthenticated
+  );
+
+  console.log("hey isAuthenticated signe up", isAuthenticated);
 
   const handleSendOTP = () => {
     // Logic to send OTP
-    setIsOtpSent(true);
-    setShowOtpField(true);
+    if (formData) {
+      dispatch(login(formData));
+      setIsOtpSent(true);
+      setShowOtpField(true);
+    }
   };
 
   const handleResendOTP = () => {
-    // Logic to resend OTP
-    // Implement your resend OTP functionality here
+    dispatch(login(formData));
   };
 
   const handleVerifyOTP = () => {
-    // Logic to verify OTP
-    // Implement your OTP verification logic here
+    if (otp) {
+      dispatch(verifyOTP({ otp, email: formData.email }));
+      // setIsOtpSent(false);
+      // setShowOtpField(false);
+    }
+  };
+
+  //console.log("hey login formdata", formData);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -25,12 +54,28 @@ const Authentication = () => {
       <h2>Login</h2>
       <form className="login-form">
         <div className="form-group">
-          <label htmlFor="username">Username/Email</label>
-          <input type="text" id="username" className="form-control" />
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            className="form-control"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
         </div>
         <div className="form-group">
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" className="form-control" />
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
         </div>
         {!showOtpField ? (
           <button
@@ -43,7 +88,13 @@ const Authentication = () => {
         ) : (
           <div className="form-group">
             <label htmlFor="otp">Enter OTP</label>
-            <input type="text" id="otp" className="form-control" />
+            <input
+              type="text"
+              id="otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="form-control"
+            />
             <button
               className="btn btn-primary"
               type="button"

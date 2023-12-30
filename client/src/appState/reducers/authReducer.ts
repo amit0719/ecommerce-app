@@ -16,7 +16,8 @@ const authReducer = (state = initialState, action: any) => {
         error: null,
       };
     case "REGISTER_SUCCESS":
-    case "LOGIN_SUCCESS":
+      // case "LOGIN_SUCCESS":
+      console.log("hey in reducer", action.payload);
       return {
         ...state,
         loading: false,
@@ -28,6 +29,8 @@ const authReducer = (state = initialState, action: any) => {
       return {
         ...state,
         loading: false,
+        isAuthenticated: true,
+        user: action.payload,
         error: null,
         // Additional logic for OTP verification
       };

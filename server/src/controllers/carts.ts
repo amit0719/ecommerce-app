@@ -9,7 +9,7 @@ export const getCartItems = async (
     const { userId } = req.query;
 
     // Find all items in the cart for the specified user
-    const cartItems = await CartItem.find({ userId });
+    const cartItems = await CartItem.find({ userId }).populate("productId");
 
     res.status(200).json({ cartItems });
   } catch (err: any) {
