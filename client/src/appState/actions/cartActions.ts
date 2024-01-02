@@ -30,12 +30,12 @@ export const addToCart = (itemData: any) => {
 };
 
 // Remove item from cart action
-export const removeFromCart = (itemId: any) => {
+export const removeFromCart = (userId: string, productId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
-      await axiosInstance.post("/carts/remove", { itemId });
-      dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: itemId });
+      await axiosInstance.post("/carts/remove", { userId, productId });
+      dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
     } catch (error: any) {
       dispatch({
         type: "REMOVE_FROM_CART_FAILURE",
@@ -46,13 +46,18 @@ export const removeFromCart = (itemId: any) => {
 };
 
 // Update cart item action
-export const updateCartItem = (itemId: any, updatedItemData: any) => {
+export const updateCartItem = (
+  userId: string,
+  productId: string,
+  quantity: any
+) => {
   return async (dispatch: any) => {
     dispatch({ type: "UPDATE_CART_ITEM_REQUEST" });
     try {
       const response = await axiosInstance.post("/carts/update", {
-        itemId,
-        updatedItemData,
+        userId,
+        productId,
+        quantity,
       });
       dispatch({ type: "UPDATE_CART_ITEM_SUCCESS", payload: response.data });
     } catch (error: any) {

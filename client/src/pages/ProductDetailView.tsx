@@ -1,47 +1,39 @@
 import { useParams } from "react-router-dom";
 import { appData } from "../data";
 import StarRating from "../components/StarRating/StarRating";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../appState/actions/cartActions";
+import { useEffect, useState } from "react";
+import { fetchProductById } from "../appState/actions/productActions";
 
 const ProductDetailView = () => {
-  const { id } = useParams(); // Retrieve the product ID from the URL
-  // const [product, setProduct] = useState(appData.products[0]);
+  const dispatch: any = useDispatch();
+  const { id } = useParams();
+  const { product } = useSelector((state: any) => state.products);
+  const userId = useSelector((state: any) => state.auth.userId);
+
+  console.log("hey ProductDetailView products", product);
+
+  const discountPrice = 0;
+  const averageRating = 3;
 
   const {
     name,
-    imageUrl,
+    image_url: imageUrl,
     price,
-    discountPrice,
     description,
-    details = [],
-    averageRating,
     reviewsCount,
-  } = appData.products[0];
+  } = product ?? {};
 
-  // // Simulated fetch function to get product details based on ID
-  // const fetchProduct = (id) => {
-  //   // Replace this with your actual fetch logic
-  //   const fetchedProduct = {
-  //     id: id,
-  //     name: "Sample Product",
-  //     mainImage: "main-image-url.jpg",
-  //     additionalImages: ["image-url1.jpg", "image-url2.jpg", "image-url3.jpg"],
-  //     price: 50,
-  //     discountPrice: 45,
-  //     description: "Product description",
-  //     details: ["Detail 1", "Detail 2", "Detail 3"],
-  //     averageRating: 4.5,
-  //     reviewsCount: 20,
-  //     recommendedProducts: [], // Assuming an empty array for recommended products
-  //   };
-  //   setProduct(fetchedProduct);
-  // };
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchProductById(id));
+    }
+  }, [dispatch, id]);
 
-  // useEffect(() => {
-  //   fetchProduct(productId); // Fetch product details when the component mounts
-  // }, [productId]);
-
-  const handleAddToCart = () => {
-    // Logic to add the item to the cart
+  const handleAddToCart = (e) => {
+    dispatch(addToCart({ productId: id, userId }));
+    e.preventDefault();
   };
 
   const handleCheckout = () => {
@@ -86,7 +78,7 @@ const ProductDetailView = () => {
               >
                 <button
                   className="btn btn-primary mr-2"
-                  onClick={handleAddToCart}
+                  onClick={(e) => handleAddToCart(e)}
                   style={{
                     backgroundColor: "#D10024",
                     color: "white",
@@ -109,11 +101,6 @@ const ProductDetailView = () => {
             {/* Detailed product information */}
             <h2>Product Details</h2>
             <p>{description}</p>
-            <ul>
-              {details.map((detail, index) => (
-                <li key={index}>{detail}</li>
-              ))}
-            </ul>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import StarRating from "../StarRating/StarRating";
 
-const ProductCard = ({ product, handleAddToCart }: any) => {
+const ProductCard = ({ product }: any) => {
   const {
     category,
     _id: id,
@@ -35,15 +35,6 @@ const ProductCard = ({ product, handleAddToCart }: any) => {
                 ${price}
               </span>
             </p>
-          </div>
-          <div className="card-footer" style={{ backgroundColor: "#fff" }}>
-            <button
-              className="btn btn-block"
-              style={{ backgroundColor: "#D10024", color: "#fff" }}
-              onClick={(e) => handleAddToCart(e, product)}
-            >
-              Add to Cart
-            </button>
           </div>
         </div>
       </Link>

@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -17,20 +19,22 @@ const authReducer = (state = initialState, action: any) => {
       };
     case "REGISTER_SUCCESS":
       // case "LOGIN_SUCCESS":
-      console.log("hey in reducer", action.payload);
+      const { userId: registerUserId } = jwtDecode(action.payload.token) as any;
       return {
         ...state,
         loading: false,
         isAuthenticated: true,
-        user: action.payload,
+        userId: registerUserId,
         error: null,
       };
     case "VERIFY_OTP_SUCCESS":
+      console.log("hey action", action);
+      const { userId: loggedInUserId } = jwtDecode(action.payload.token) as any;
       return {
         ...state,
         loading: false,
         isAuthenticated: true,
-        user: action.payload,
+        userId: loggedInUserId,
         error: null,
         // Additional logic for OTP verification
       };
@@ -45,7 +49,7 @@ const authReducer = (state = initialState, action: any) => {
     case "LOGOUT":
       return {
         ...state,
-        user: null,
+        userId: null,
         isAuthenticated: false,
       };
     default:

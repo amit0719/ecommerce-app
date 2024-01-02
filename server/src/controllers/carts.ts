@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import CartItem from "../models/cart";
+import Product from "../models/product";
 
 export const getCartItems = async (
   req: Request,
@@ -8,10 +9,27 @@ export const getCartItems = async (
   try {
     const { userId } = req.query;
 
-    // Find all items in the cart for the specified user
-    const cartItems = await CartItem.find({ userId }).populate("productId");
+    // Find all items in the cart for the specified user //.populate("productId")
+    const cartItems = await CartItem.find({ userId });
 
-    res.status(200).json({ cartItems });
+    // Extract product IDs from cart items
+    const productIds = cartItems.map((item) => item.productId);
+
+    // Fetch product details for the product IDs
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    // Combine cart items with product details
+    const cartWithProductInfo = cartItems.map((item) => {
+      const product = products.find(
+        (prod) => prod._id.toString() === item.productId.toString()
+      );
+      return {
+        cartItem: item,
+        productInfo: product,
+      };
+    });
+
+    res.status(200).json({ cartItems: cartWithProductInfo });
   } catch (err: any) {
     res
       .status(500)
@@ -57,15 +75,15 @@ export const removeFromCart = async (
     // Remove item from the cart
     await CartItem.deleteOne({ userId, productId });
 
-    res.status(200).json({ message: "Item removed from cart" });
+    const cartItems = await CartItem.find({ userId });
+
+    res.status(200).json({ message: "Item removed from cart", cartItems });
   } catch (err: any) {
     res
       .status(500)
       .json({ message: "Failed to remove item from cart", error: err.message });
   }
 };
-
-// ...existing imports and code
 
 export const updateCartItem = async (
   req: Request,
@@ -82,13 +100,18 @@ export const updateCartItem = async (
       return;
     }
 
+    // if (quantity === 0) {
+    //   await CartItem.deleteOne({ userId, productId });
+    //   res.status(200).json({ message: "Item removed from cart", quantity });
+    // }
+
     // Update quantity if provided in the request
     if (quantity !== undefined && quantity !== null) {
       cartItem.quantity = quantity;
     }
 
     await cartItem.save();
-    res.status(200).json({ message: "Cart item updated", cartItem });
+    res.status(200).json({ message: "Cart item updated", cartItem, quantity });
   } catch (err: any) {
     res
       .status(500)

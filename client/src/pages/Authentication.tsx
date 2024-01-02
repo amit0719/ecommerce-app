@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, verifyOTP } from "../appState/actions/authActions";
+import { useNavigate } from "react-router-dom";
 
 const Authentication = () => {
+  const navigateTo = useNavigate();
   const dispatch: any = useDispatch();
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
@@ -15,6 +17,12 @@ const Authentication = () => {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
   );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigateTo("/");
+    }
+  }, [isAuthenticated]);
 
   console.log("hey isAuthenticated signe up", isAuthenticated);
 
@@ -38,8 +46,6 @@ const Authentication = () => {
       // setShowOtpField(false);
     }
   };
-
-  //console.log("hey login formdata", formData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -11,15 +11,14 @@ const UserRegistration = () => {
     email: "",
     password: "",
   });
+
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
   );
 
-  console.log("hey isAuthenticated signe up", isAuthenticated);
-
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/home");
+      navigate("/");
     }
   });
 

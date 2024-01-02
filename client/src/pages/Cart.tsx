@@ -6,28 +6,45 @@ import {
   removeFromCart,
 } from "../appState/actions/cartActions";
 import { useNavigate } from "react-router-dom";
-import proImage from "../assets/images/laptopImg.jpg";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
+  const userId = useSelector((state: any) => state.auth.userId);
 
-  const isAuthenticated = true;
-  //  useSelector(
-  //   (state: any) => state.auth.isAuthenticated
-  // );
-  //const cartItems = useSelector((state: any) => state.cart.cartItems);
+  const isAuthenticated = useSelector(
+    (state: any) => state.auth.isAuthenticated
+  );
+  
+  const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
+
+  const requiredCartItemsFields = cartItems?.map((items) => {
+    return {
+      cartId: items.cartItem._id,
+      productId: items.cartItem.productId,
+      name: items.productInfo.name,
+      price: items.productInfo.price,
+      image: items.productInfo.image_url,
+      quantity: items.cartItem.quantity,
+    };
+  });
+
+  console.log("hey cartItems", requiredCartItemsFields);
 
   useEffect(() => {
-    // dispatch(fetchCartItems());
-  }, [dispatch]);
+    if (cartItems) {
+      dispatch(fetchCartItems({ userId }));
+    }
+  }, [dispatch, cartItems]);
 
-  const handleUpdateCart = (itemId, quantity) => {
-    // dispatch(updateCartItem(itemId, quantity));
+  const handleUpdateCart = async (itemId, quantity) => {
+    await dispatch(updateCartItem(userId, itemId, quantity));
+    dispatch(fetchCartItems({ userId }));
   };
 
-  const handleRemoveFromCart = (itemId) => {
-    // dispatch(removeFromCart(itemId));
+  const handleRemoveFromCart = async (itemId) => {
+    await dispatch(removeFromCart(userId, itemId));
+    dispatch(fetchCartItems({ userId }));
   };
 
   const handleCheckout = () => {
@@ -40,38 +57,25 @@ const CartPage = () => {
     }
   };
 
-  const cartItems = [
-    {
-      id: 1,
-      name: "T-shirt",
-      price: 9.99,
-      quantity: 1,
-      image: proImage,
-    },
-    {
-      id: 2,
-      name: "Smartphone",
-      price: 399.99,
-      quantity: 2,
-      image: proImage,
-    },
-  ];
-
   const getTotalPrice = () => {
     let total = 0;
-    cartItems.forEach((item) => {
+    requiredCartItemsFields.forEach((item) => {
       total += item.price * item.quantity;
     });
     return total;
   };
+
+  if (cartItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="container mt-4">
       <div className="row">
         <div className="col-md-6">
           <h2>Cart</h2>
-          {cartItems.map((item) => (
-            <div key={item.id} className="mb-3 border-bottom pb-3">
+          {requiredCartItemsFields.map((item) => (
+            <div key={item.productId} className="mb-3 border-bottom pb-3">
               <div className="row">
                 <div className="col-md-4">
                   <img src={item.image} alt={item.name} className="img-fluid" />
@@ -83,7 +87,7 @@ const CartPage = () => {
                     <button
                       className="btn btn-sm btn-outline-primary me-2"
                       onClick={() =>
-                        handleUpdateCart(item.id, item.quantity + 1)
+                        handleUpdateCart(item.productId, item.quantity + 1)
                       }
                     >
                       +
@@ -92,14 +96,14 @@ const CartPage = () => {
                     <button
                       className="btn btn-sm btn-outline-primary ms-2"
                       onClick={() =>
-                        handleUpdateCart(item.id, item.quantity - 1)
+                        handleUpdateCart(item.productId, item.quantity - 1)
                       }
                     >
                       -
                     </button>
                     <button
                       className="btn btn-sm btn-outline-danger ms-auto"
-                      onClick={() => handleRemoveFromCart(item.id)}
+                      onClick={() => handleRemoveFromCart(item.productId)}
                     >
                       Remove
                     </button>
@@ -112,7 +116,7 @@ const CartPage = () => {
         <div className="col-md-6">
           <h2>Price Details</h2>
           <p>
-            Price ({cartItems.length} items): ${getTotalPrice()}
+            Price ({requiredCartItemsFields.length} items): ${getTotalPrice()}
           </p>
           {/* Display discount, delivery charges, etc. */}
           <p>Discount: $0.00</p>

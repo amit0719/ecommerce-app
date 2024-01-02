@@ -28,12 +28,12 @@ export const login = async (req: Request, res: Response) => {
     const currentTime = new Date(); // Current time
     user.otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME); // Add 5 minutes
 
-    user.otp = Number(OTP);
+    user.otp = 1234; //Number(OTP);
 
     await user.save();
     //  await sendOtpEmailToUser(user.email, user.otp);
 
-    return res.status(200).json({ message: "OTP sent to your email" });
+    return res.status(200).json({ message: "OTP sent to your email", OTP });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
