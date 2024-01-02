@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -15,6 +18,11 @@ const CheckoutPage = () => {
     shippingMethod: "standard",
   });
 
+  const storageKey = isAuthenticated ? userId : "guest";
+  const { cartItems = [], totalPrice = 0 } = JSON.parse(
+    localStorage.getItem(storageKey)
+  );
+
   const indianStates = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -22,28 +30,15 @@ const CheckoutPage = () => {
     // Add other Indian states here
   ];
 
-  // Dummy products in the cart (replace with actual data)
-  const cartProducts = [
-    {
-      id: 1,
-      title: "Product 1",
-      price: 50,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      title: "Product 2",
-      price: 70,
-      image: "https://via.placeholder.com/150",
-    },
-    // Add more products as needed
-  ];
-
-  // Dummy summary details (replace with actual data)
-  const subtotal = 350; // Example subtotal amount
-  const shippingCharge = 0; // Example shipping charge
-  const tax = 50; // Example tax
+  const subtotal = totalPrice;
+  const shippingCharge = 0;
+  const tax = 50;
   const total = subtotal + shippingCharge + tax;
+
+  const saveCheckoutInfoToLocalStorage = () => {
+    const updatedData = { cartItems, totalPrice: total, checkout: formData };
+    localStorage.setItem(storageKey, JSON.stringify(updatedData));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,9 +50,13 @@ const CheckoutPage = () => {
 
   const handleContinueToBilling = (e) => {
     e.preventDefault();
-    // Perform any validations or necessary actions before moving to the billing section
+    saveCheckoutInfoToLocalStorage();
     navigate("/billing");
   };
+
+  if (cartItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="container mt-4">
@@ -184,8 +183,6 @@ const CheckoutPage = () => {
                 disabled // Country defaulted to India
               />
             </div>
-            {/* Other form fields for shipping details */}
-            {/* Remember to add required attributes and appropriate input fields */}
 
             {/* Shipping Method */}
             <div className="mb-3">
@@ -238,18 +235,19 @@ const CheckoutPage = () => {
 
           <div className="bg-dark text-light p-3 mb-4">
             <h2>In Your Cart</h2>
-            {cartProducts.map((product) => (
-              <div key={product.id} className="mb-3">
+            {cartItems.map(({ id, name, price, image, quantity }) => (
+              <div key={id} className="mb-3">
                 <div className="d-flex align-items-center">
                   <img
-                    src={product.image}
-                    alt={product.title}
+                    src={image}
+                    alt={name}
                     className="me-3"
                     style={{ maxWidth: "50px" }}
                   />
                   <div>
-                    <h5>{product.title}</h5>
-                    <p>${product.price}</p>
+                    <h5>{name}</h5>
+                    <p>${price}</p>
+                    <p>Quantity: ${quantity}</p>
                   </div>
                 </div>
               </div>

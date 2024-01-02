@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import StarRating from "../StarRating/StarRating";
 
 const ProductCard = ({ product }: any) => {
   const {
@@ -9,7 +8,6 @@ const ProductCard = ({ product }: any) => {
     price,
     image_url: imageUrl,
     discountedPrice,
-    rating = 4,
   } = product;
 
   return (
@@ -26,9 +24,7 @@ const ProductCard = ({ product }: any) => {
             <p className="card-text" style={{ color: "#8D99AE" }}>
               {category}
             </p>
-            <div className="mb-3">
-              <StarRating rating={rating} />
-            </div>
+
             <p className="card-text" style={{ color: "#8D99AE" }}>
               {discountedPrice ? `$${discountedPrice}` : ""}
               <span className="font-weight-bold" style={{ color: "#D10024" }}>

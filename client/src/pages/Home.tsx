@@ -1,10 +1,18 @@
-import ProductGrid from "../components/ProductsListing/ProductGrid";
+import { useSelector } from "react-redux";
+import ProductCard from "../components/ProductCard";
 
 const Home = () => {
+  const { products } = useSelector((state: any) => state.products);
+
   return (
-    <>
-      <ProductGrid />
-    </>
+    <div className="container">
+      <div className="row">
+        {products &&
+          products.map((product: any) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+      </div>
+    </div>
   );
 };
 

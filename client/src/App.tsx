@@ -13,8 +13,7 @@ import UserRegistration from "./pages/UserRegistration";
 import { useDispatch } from "react-redux";
 import { fetchAllProducts } from "./appState/actions/productActions";
 import { fetchAllCategories } from "./appState/actions/categoryActions";
-
-//import Error404 from './pages/Error404';
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   const dispatch: any = useDispatch();
@@ -37,7 +36,7 @@ function App() {
             <Route path="profile" element={<UserProfile />} />
             <Route path="login" element={<Authentication />} />
             <Route path="signup" element={<UserRegistration />} />
-            {/* <Route path = '*' element={Error404} /> */}
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Layout>
       </Router>

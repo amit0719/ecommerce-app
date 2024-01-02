@@ -1,9 +1,7 @@
 import { useParams } from "react-router-dom";
-import { appData } from "../data";
-import StarRating from "../components/StarRating/StarRating";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../appState/actions/cartActions";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchProductById } from "../appState/actions/productActions";
 
 const ProductDetailView = () => {
@@ -11,11 +9,7 @@ const ProductDetailView = () => {
   const { id } = useParams();
   const { product } = useSelector((state: any) => state.products);
   const userId = useSelector((state: any) => state.auth.userId);
-
-  console.log("hey ProductDetailView products", product);
-
   const discountPrice = 0;
-  const averageRating = 3;
 
   const {
     name,
@@ -68,10 +62,7 @@ const ProductDetailView = () => {
                   <del>${price}</del>
                 </p>
               )}
-              <div className="mb-3">
-                <StarRating rating={averageRating} />
-                <span> ({reviewsCount} Ratings)</span>
-              </div>
+
               <div
                 className="d-flex justify-content-between"
                 style={{ width: "100%", gap: "8px" }}
@@ -98,7 +89,6 @@ const ProductDetailView = () => {
             </div>
           </div>
           <div className="col-md-6">
-            {/* Detailed product information */}
             <h2>Product Details</h2>
             <p>{description}</p>
           </div>

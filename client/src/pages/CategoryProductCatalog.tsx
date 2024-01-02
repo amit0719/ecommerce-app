@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ProductCard from "../components/ProductsListing/ProductCard";
+import ProductCard from "../components/ProductCard";
 import { appData } from "../data";
 import Pagination from "../components/common/Pagination";
 

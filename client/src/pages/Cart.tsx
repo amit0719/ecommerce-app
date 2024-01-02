@@ -10,64 +10,54 @@ import { useNavigate } from "react-router-dom";
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
-  const userId = useSelector((state: any) => state.auth.userId);
-
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
-  
+  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
   const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
 
-  const requiredCartItemsFields = cartItems?.map((items) => {
-    return {
-      cartId: items.cartItem._id,
-      productId: items.cartItem.productId,
-      name: items.productInfo.name,
-      price: items.productInfo.price,
-      image: items.productInfo.image_url,
-      quantity: items.cartItem.quantity,
-    };
-  });
-
-  console.log("hey cartItems", requiredCartItemsFields);
-
   useEffect(() => {
-    if (cartItems) {
+    if (userId && cartItems.length === 0) {
       dispatch(fetchCartItems({ userId }));
     }
-  }, [dispatch, cartItems]);
+  }, [cartItems, userId]);
+
+  const storageKey = isAuthenticated ? userId : "guest";
+
+  const requiredCartItemsFields = cartItems.map((item) => ({
+    cartId: item.cartItem._id,
+    productId: item.cartItem.productId,
+    name: item.productInfo.name,
+    price: item.productInfo.price,
+    image: item.productInfo.image_url,
+    quantity: item.cartItem.quantity,
+  }));
+
+  const saveCartToLocalStorage = (cartItems, totalPrice) => {
+    const cartData = { cartItems, totalPrice };
+    localStorage.setItem(storageKey, JSON.stringify(cartData));
+  };
 
   const handleUpdateCart = async (itemId, quantity) => {
     await dispatch(updateCartItem(userId, itemId, quantity));
-    dispatch(fetchCartItems({ userId }));
   };
 
   const handleRemoveFromCart = async (itemId) => {
     await dispatch(removeFromCart(userId, itemId));
-    dispatch(fetchCartItems({ userId }));
   };
 
   const handleCheckout = () => {
-    if (isAuthenticated) {
-      // Redirect to the checkout page if authenticated
-      navigate("/checkout");
-    } else {
-      // Redirect to the login page or show a message for authentication
-      navigate("/login");
-    }
+    isAuthenticated ? navigate("/checkout") : navigate("/login");
   };
 
-  const getTotalPrice = () => {
-    let total = 0;
-    requiredCartItemsFields.forEach((item) => {
-      total += item.price * item.quantity;
-    });
-    return total;
-  };
+  const getTotalPrice = () =>
+    requiredCartItemsFields.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
 
   if (cartItems.length === 0) {
     return null;
   }
+
+  saveCartToLocalStorage(requiredCartItemsFields, getTotalPrice());
 
   return (
     <div className="container mt-4">
