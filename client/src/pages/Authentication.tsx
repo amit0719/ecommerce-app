@@ -56,11 +56,13 @@ const Authentication = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="container mt-5">
       <h2>Login</h2>
       <form className="login-form">
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
           <input
             type="text"
             className="form-control"
@@ -71,8 +73,10 @@ const Authentication = () => {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <input
             type="password"
             className="form-control"
@@ -92,8 +96,10 @@ const Authentication = () => {
             Send OTP
           </button>
         ) : (
-          <div className="form-group">
-            <label htmlFor="otp">Enter OTP</label>
+          <div className="mb-3">
+            <label htmlFor="otp" className="form-label">
+              Enter OTP
+            </label>
             <input
               type="text"
               id="otp"

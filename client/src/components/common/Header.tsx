@@ -1,6 +1,33 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../appState/actions/authActions";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch: any = useDispatch();
+  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const [storedValue] = useLocalStorage(userId);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
+  useEffect(() => {
+    const count = storedValue?.cartItems?.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.quantity,
+      0
+    );
+    setTotalQuantity(count);
+  }, [storedValue]);
+
+  console.log("hey in header", storedValue);
+
+  const handleLoginLogout = async () => {
+    if (isAuthenticated) {
+      await dispatch(logout());
+      navigate("/");
+    }
+  };
+
   return (
     <div className="container-fluid bg-dark py-4">
       <div className="row align-items-center">
@@ -19,11 +46,11 @@ const Header = () => {
 
         {/* User login */}
 
-        <div className="col-md-2 text-center">
+        <div className="col-md-2 text-center" onClick={handleLoginLogout}>
           <div className="text-white">
             <i className="fas fa-user-circle fa-2x"></i>
             <Link className="text-decoration-none text-reset" to={"login"}>
-              <p className="m-0">Login</p>
+              <p className="m-0">{isAuthenticated ? "Logout" : "Login"}</p>
             </Link>
           </div>
         </div>
@@ -45,7 +72,7 @@ const Header = () => {
                 backgroundColor: "#D10024",
               }}
             >
-              3
+              {totalQuantity}
             </span>
           </div>
         </div>

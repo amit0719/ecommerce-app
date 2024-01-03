@@ -3,35 +3,49 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../appState/actions/cartActions";
 import { useEffect } from "react";
 import { fetchProductById } from "../appState/actions/productActions";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const ProductDetailView = () => {
   const dispatch: any = useDispatch();
   const { id } = useParams();
   const { product } = useSelector((state: any) => state.products);
   const userId = useSelector((state: any) => state.auth.userId);
-  const discountPrice = 0;
+  const [storedValue, setStoredValue] = useLocalStorage(userId);
 
-  const {
-    name,
-    image_url: imageUrl,
-    price,
-    description,
-    reviewsCount,
-  } = product ?? {};
+  const { name, image_url: imageUrl, price, description } = product ?? {};
 
   useEffect(() => {
-    if (id) {
+    if (!product && id) {
       dispatch(fetchProductById(id));
     }
-  }, [dispatch, id]);
+  }, [product, id]);
+
+  console.log("hey storedValue", storedValue);
 
   const handleAddToCart = (e) => {
-    dispatch(addToCart({ productId: id, userId }));
-    e.preventDefault();
-  };
+    const cartItem = { productId: id, userId };
+    const { cartItems } = storedValue;
 
-  const handleCheckout = () => {
-    // Logic to proceed to checkout
+    // Check if the product already exists in the local storage cart items
+    const existingCartItemIndex = cartItems.findIndex(
+      (item) => item.productId === id && item.userId === userId
+    );
+
+    if (existingCartItemIndex !== -1) {
+      // If the product already exists, update its quantity
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingCartItemIndex].quantity += 1; // Increase quantity
+      setStoredValue({ ...storedValue, cartItems: updatedCartItems });
+    } else {
+      // If the product doesn't exist, add it to the local storage cart items
+      const updatedCartItems = [...cartItems, { ...cartItem, quantity: 1 }];
+      setStoredValue({ ...storedValue, cartItems: updatedCartItems });
+    }
+
+    // If user is logged in, also dispatch action to update cart in backend
+    if (userId) {
+      dispatch(addToCart(cartItem));
+    }
   };
 
   return (
@@ -48,21 +62,7 @@ const ProductDetailView = () => {
             />
             {/* Price, rating, and buttons */}
             <div className="d-flex flex-column align-items-start">
-              {discountPrice && (
-                <p>
-                  <span>Special price:</span>
-                  <span>
-                    ${discountPrice} (
-                    {Math.round(((price - discountPrice) / price) * 100)}% off)
-                  </span>
-                </p>
-              )}
-              {discountPrice && (
-                <p>
-                  <del>${price}</del>
-                </p>
-              )}
-
+              <p>${price}</p>
               <div
                 className="d-flex justify-content-between"
                 style={{ width: "100%", gap: "8px" }}
@@ -77,13 +77,6 @@ const ProductDetailView = () => {
                   }}
                 >
                   Add to Cart
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={handleCheckout}
-                  style={{ flex: "1" }}
-                >
-                  Proceed to Checkout
                 </button>
               </div>
             </div>

@@ -22,7 +22,6 @@ const CartPage = () => {
   const storageKey = isAuthenticated ? userId : "guest";
 
   const requiredCartItemsFields = cartItems.map((item) => ({
-    cartId: item.cartItem._id,
     productId: item.cartItem.productId,
     name: item.productInfo.name,
     price: item.productInfo.price,
