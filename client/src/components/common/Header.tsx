@@ -28,7 +28,7 @@ const Header = () => {
   };
 
   const tooltip = (
-    <Tooltip id="tooltip">Please login to add items to cart</Tooltip>
+    <Tooltip id="tooltip">Please log in to view your cart items</Tooltip>
   );
 
   return (
@@ -65,9 +65,15 @@ const Header = () => {
           >
             <div className="text-white position-relative">
               <i className="fas fa-shopping-cart fa-2x"></i>
-              <Link className="text-decoration-none text-reset" to={"cart"}>
-                <p className="m-0">Your Cart</p>
-              </Link>
+              {isAuthenticated ? (
+                <Link className="text-decoration-none text-reset" to={"cart"}>
+                  <p className="m-0">Your Cart</p>
+                </Link>
+              ) : (
+                <div className="text-decoration-none text-reset">
+                  <p className="m-0">Your Cart</p>
+                </div>
+              )}
               {/* Cart count badge */}
               <Badge
                 pill

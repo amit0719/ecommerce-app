@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Card, Col, Row } from "react-bootstrap";
 
 const ProductCard = ({ product }: any) => {
   const {
@@ -11,30 +12,30 @@ const ProductCard = ({ product }: any) => {
   } = product;
 
   return (
-    <div className="col-md-4 mb-4">
-      <Link
-        to={`/product/${id}`}
-        className="card text-center mx-auto"
-        style={{ maxWidth: "18rem", textDecoration: "none" }}
-      >
-        <div>
-          <img src={imageUrl} className="card-img-top" alt={name} />
-          <div className="card-body">
-            <h5 className="card-title">{name}</h5>
-            <p className="card-text" style={{ color: "#8D99AE" }}>
-              {category}
-            </p>
-
-            <p className="card-text" style={{ color: "#8D99AE" }}>
+    <Col md={4} className="mb-4">
+      <Link to={`/product/${id}`} className="text-decoration-none">
+        <Card className="text-center h-100">
+          <div className="card-img-container">
+            <Card.Img
+              variant="top"
+              src={imageUrl}
+              alt={name}
+              className="card-img"
+            />
+          </div>
+          <Card.Body className="d-flex flex-column">
+            <Card.Title>{name}</Card.Title>
+            <Card.Text style={{ color: "#8D99AE" }}>{category}</Card.Text>
+            <Card.Text style={{ color: "#8D99AE", flex: "1 0 auto" }}>
               {discountedPrice ? `$${discountedPrice}` : ""}
               <span className="font-weight-bold" style={{ color: "#D10024" }}>
                 ${price}
               </span>
-            </p>
-          </div>
-        </div>
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </Link>
-    </div>
+    </Col>
   );
 };
 
