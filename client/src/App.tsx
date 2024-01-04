@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { fetchAllProducts } from "./appState/actions/productActions";
 import { fetchAllCategories } from "./appState/actions/categoryActions";
 import PageNotFound from "./pages/PageNotFound";
+import PaymentForm from "./pages/PaymentForm";
+import OrderNotification from "./pages/OrderNotification";
 
 function App() {
   const dispatch: any = useDispatch();
@@ -33,6 +35,8 @@ function App() {
             <Route path="product/:id" element={<ProductDetailView />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="payment" element={<PaymentForm />} />
+            <Route path="orderNotification" element={<OrderNotification />} />
             <Route path="profile" element={<UserProfile />} />
             <Route path="login" element={<Authentication />} />
             <Route path="signup" element={<UserRegistration />} />

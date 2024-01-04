@@ -1,23 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import {
   fetchCartItems,
   updateCartItem,
   removeFromCart,
 } from "../appState/actions/cartActions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
   const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
   const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
-
-  useEffect(() => {
-    if (userId && cartItems.length === 0) {
-      dispatch(fetchCartItems({ userId }));
-    }
-  }, [cartItems, userId]);
 
   const storageKey = isAuthenticated ? userId : "guest";
 
@@ -36,10 +29,12 @@ const CartPage = () => {
 
   const handleUpdateCart = async (itemId, quantity) => {
     await dispatch(updateCartItem(userId, itemId, quantity));
+    await dispatch(fetchCartItems({ userId }));
   };
 
   const handleRemoveFromCart = async (itemId) => {
     await dispatch(removeFromCart(userId, itemId));
+    await dispatch(fetchCartItems({ userId }));
   };
 
   const handleCheckout = () => {
@@ -53,7 +48,18 @@ const CartPage = () => {
     );
 
   if (cartItems.length === 0) {
-    return null;
+    return (
+      <div className="alert alert-info" role="alert">
+        <h4 className="alert-heading">Your Cart is Empty</h4>
+        <p>
+          Looks like you haven't added any items to your cart yet.
+          <br />
+          <Link to="/" className="alert-link">
+            Browse Products
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   saveCartToLocalStorage(requiredCartItemsFields, getTotalPrice());

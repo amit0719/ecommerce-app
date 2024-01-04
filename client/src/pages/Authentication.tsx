@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, verifyOTP } from "../appState/actions/authActions";
 import { useNavigate } from "react-router-dom";
+import { fetchCartItems } from "../appState/actions/cartActions";
 
 const Authentication = () => {
   const navigateTo = useNavigate();
@@ -13,22 +14,46 @@ const Authentication = () => {
     password: "",
   });
   const [otp, setOtp] = useState(null);
+  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
 
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const dispatchRequiredActions = async () => {
+    await dispatch(fetchCartItems({ userId }));
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
+      dispatchRequiredActions();
       navigateTo("/");
     }
   }, [isAuthenticated]);
 
-  console.log("hey isAuthenticated signe up", isAuthenticated);
-
   const handleSendOTP = () => {
-    // Logic to send OTP
-    if (formData) {
+    let formErrors = {
+      email: "",
+      password: "",
+    };
+
+    let hasError = false;
+
+    if (formData.email.trim() === "") {
+      formErrors.email = "Email is required";
+      hasError = true;
+    }
+
+    if (formData.password.trim() === "") {
+      formErrors.password = "Password is required";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(formErrors);
+    } else {
       dispatch(login(formData));
       setIsOtpSent(true);
       setShowOtpField(true);
@@ -53,6 +78,11 @@ const Authentication = () => {
       ...prevData,
       [name]: value,
     }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   return (
@@ -72,6 +102,7 @@ const Authentication = () => {
             onChange={handleInputChange}
             required
           />
+          {errors.email && <p className="text-danger">{errors.email}</p>}
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
@@ -86,6 +117,7 @@ const Authentication = () => {
             onChange={handleInputChange}
             required
           />
+          {errors.password && <p className="text-danger">{errors.password}</p>}
         </div>
         {!showOtpField ? (
           <button
@@ -93,7 +125,7 @@ const Authentication = () => {
             type="button"
             onClick={handleSendOTP}
           >
-            Send OTP
+            Login
           </button>
         ) : (
           <div className="mb-3">
@@ -107,28 +139,35 @@ const Authentication = () => {
               onChange={(e) => setOtp(e.target.value)}
               className="form-control"
             />
-            <button
-              className="btn btn-primary"
-              type="button"
-              onClick={handleVerifyOTP}
-            >
-              Verify OTP
-            </button>
-            <button
-              className="btn btn-link"
-              type="button"
-              onClick={handleResendOTP}
-            >
-              Resend OTP
-            </button>
+            {isOtpSent && (
+              <p className="text-success mt-3">{"OTP sent to your email"}</p>
+            )}
+            <div className="justify-content-center mt-3">
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={handleVerifyOTP}
+              >
+                Verify OTP
+              </button>
+              <button
+                className="btn btn-link"
+                type="button"
+                onClick={handleResendOTP}
+              >
+                Resend OTP
+              </button>
+            </div>
           </div>
         )}
-        <div className="forgot-password">
+        <div className="mt-3">
           <a href="/forgot-password">Forgot Password?</a>
         </div>
-        <div className="sign-up-link">
-          <p>Don't have an account?</p>
-          <a href="/signup">Sign Up</a>
+        <div className="justify-content-center mt-3">
+          <span>Don't have an account?</span>
+          <span className="gap-1">
+            <a href="/signup">Sign Up</a>
+          </span>
         </div>
       </form>
     </div>

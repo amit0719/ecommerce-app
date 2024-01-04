@@ -51,7 +51,8 @@ const CheckoutPage = () => {
   const handleContinueToBilling = (e) => {
     e.preventDefault();
     saveCheckoutInfoToLocalStorage();
-    navigate("/billing");
+    // navigate("/payment");
+    navigate("/orderNotification");
   };
 
   if (cartItems.length === 0) {

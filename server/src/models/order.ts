@@ -15,6 +15,7 @@ interface IOrder extends Document {
   }[];
   totalAmount: number;
   status: string;
+  paymentStatus: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +47,11 @@ const OrderSchema: Schema = new Schema(
     status: {
       type: String,
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"], // Example status options
+      default: "Pending",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Paid", "Failed", "Refunded"],
       default: "Pending",
     },
     createdAt: {

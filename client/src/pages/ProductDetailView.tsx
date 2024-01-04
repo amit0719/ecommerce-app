@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../appState/actions/cartActions";
+import { addToCart, fetchCartItems } from "../appState/actions/cartActions";
 import { useEffect } from "react";
 import { fetchProductById } from "../appState/actions/productActions";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -22,7 +22,7 @@ const ProductDetailView = () => {
 
   console.log("hey storedValue", storedValue);
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     const cartItem = { productId: id, userId };
     const { cartItems } = storedValue;
 
@@ -38,13 +38,17 @@ const ProductDetailView = () => {
       setStoredValue({ ...storedValue, cartItems: updatedCartItems });
     } else {
       // If the product doesn't exist, add it to the local storage cart items
-      const updatedCartItems = [...cartItems, { ...cartItem, quantity: 1 }];
+      const updatedCartItems = [
+        ...cartItems,
+        { ...cartItem, name, price, image: imageUrl, quantity: 1 },
+      ];
       setStoredValue({ ...storedValue, cartItems: updatedCartItems });
     }
 
     // If user is logged in, also dispatch action to update cart in backend
     if (userId) {
-      dispatch(addToCart(cartItem));
+      await dispatch(addToCart(cartItem));
+      await dispatch(fetchCartItems({ userId }));
     }
   };
 
@@ -54,13 +58,11 @@ const ProductDetailView = () => {
         <div className="row">
           <div className="col-md-6">
             <h1>{name}</h1>
-            {/* Product image */}
             <img
               src={imageUrl}
               className="img-fluid mb-3"
               alt={`Product: ${name}`}
             />
-            {/* Price, rating, and buttons */}
             <div className="d-flex flex-column align-items-start">
               <p>${price}</p>
               <div
