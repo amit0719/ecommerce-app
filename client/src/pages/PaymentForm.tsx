@@ -19,7 +19,7 @@ const BillingForm = () => {
   const elements = useElements();
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onPayNowClicked = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!stripe || !elements) {
       return;
@@ -52,7 +52,7 @@ const BillingForm = () => {
         <div className="col-md-6 offset-md-3">
           <div className="card p-4">
             <h2 className="card-title">Billing Information</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={onPayNowClicked}>
               <div className="form-group">
                 <label htmlFor="cardElement">Card Details</label>
                 <div

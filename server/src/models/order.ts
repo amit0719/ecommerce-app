@@ -3,13 +3,9 @@ import { Document, Schema, model } from "mongoose";
 // Define an interface for the Order document
 interface IOrder extends Document {
   orderID: string;
-  customer: {
-    name: string;
-    email: string;
-    // Add more customer details as needed
-  };
+  userId: string;
   items: {
-    product: string; // You might reference a Product schema here
+    productId: string; // You might reference a Product schema here
     quantity: number;
     // Other item details can be added here
   }[];
@@ -28,16 +24,11 @@ const OrderSchema: Schema = new Schema(
       required: true,
       unique: true,
     },
-    customer: {
-      name: { type: String, required: true },
-      email: { type: String, required: true },
-      // Define other customer details here
-    },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
     items: [
       {
-        product: { type: Schema.Types.ObjectId, ref: "Product" }, // Assuming a Product schema
+        productId: { type: Schema.Types.ObjectId, ref: "Product" }, // Assuming a Product schema
         quantity: { type: Number, required: true },
-        // Define other item details here
       },
     ],
     totalAmount: {

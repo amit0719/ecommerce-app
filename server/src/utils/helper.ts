@@ -17,3 +17,11 @@ export const sendOtpEmailToUser = async (userEmail: string, otp: number) => {
 
   await sendEmail(userEmail, subject, message);
 };
+
+export const generateOrderId = () => {
+  const timestamp = Date.now().toString(36); // Convert current timestamp to base36 string
+  const randomStr = Math.random().toString(36).substring(2, 8); // Generate random string
+  const orderId = `${timestamp}-${randomStr}`.toUpperCase(); // Combine and format the strings
+
+  return orderId;
+};

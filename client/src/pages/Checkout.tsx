@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { createOrder } from "../appState/actions/orderActions";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const dispatch: any = useDispatch();
   const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -48,11 +50,16 @@ const CheckoutPage = () => {
     });
   };
 
-  const handleContinueToBilling = (e) => {
+  const handleContinueToBilling = async (e) => {
     e.preventDefault();
     saveCheckoutInfoToLocalStorage();
+    // const orderData = {
+    //   customer,
+    //   items,
+    //   totalAmount,
+    // };
+    await dispatch(createOrder({ orderId: 12345, status: "pending" }));
     // navigate("/payment");
-    navigate("/orderNotification");
   };
 
   if (cartItems.length === 0) {

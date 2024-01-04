@@ -5,27 +5,17 @@ import {
   removeFromCart,
 } from "../appState/actions/cartActions";
 import { Link, useNavigate } from "react-router-dom";
+import { Button, Col, Container, Image, Row } from "react-bootstrap";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
   const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
-  const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
+  const { cartItems = [], totalAmount } = useSelector(
+    (state: any) => state.cart.cartItems
+  );
 
-  const storageKey = isAuthenticated ? userId : "guest";
-
-  const requiredCartItemsFields = cartItems.map((item) => ({
-    productId: item.cartItem.productId,
-    name: item.productInfo.name,
-    price: item.productInfo.price,
-    image: item.productInfo.image_url,
-    quantity: item.cartItem.quantity,
-  }));
-
-  const saveCartToLocalStorage = (cartItems, totalPrice) => {
-    const cartData = { cartItems, totalPrice };
-    localStorage.setItem(storageKey, JSON.stringify(cartData));
-  };
+  console.log("hey cart", cartItems);
 
   const handleUpdateCart = async (itemId, quantity) => {
     await dispatch(updateCartItem(userId, itemId, quantity));
@@ -42,15 +32,12 @@ const CartPage = () => {
   };
 
   const getTotalPrice = () =>
-    requiredCartItemsFields.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   if (cartItems.length === 0) {
     return (
       <div className="alert alert-info" role="alert">
-        <h4 className="alert-heading">Your Cart is Empty</h4>
+        <h5 className="alert-heading">Your Cart is Empty</h5>
         <p>
           Looks like you haven't added any items to your cart yet.
           <br />
@@ -62,72 +49,77 @@ const CartPage = () => {
     );
   }
 
-  saveCartToLocalStorage(requiredCartItemsFields, getTotalPrice());
-
   return (
-    <div className="container mt-4">
-      <div className="row">
-        <div className="col-md-6">
-          <h2>Cart</h2>
-          {requiredCartItemsFields.map((item) => (
-            <div key={item.productId} className="mb-3 border-bottom pb-3">
-              <div className="row">
-                <div className="col-md-4">
-                  <img src={item.image} alt={item.name} className="img-fluid" />
-                </div>
-                <div className="col-md-8">
-                  <h4>{item.name}</h4>
+    <Container className="mt-4">
+      <Row>
+        <Col md={6}>
+          <h3>Cart</h3>
+          {cartItems.map((item) => (
+            <div key={item.productId} className="mb-4 border rounded p-3">
+              <Row>
+                <Col md={4}>
+                  <Image src={item.image} alt={item.name} fluid />
+                </Col>
+                <Col md={8}>
+                  <h5>{item.name}</h5>
                   <p>Price: ${item.price}</p>
                   <div className="d-flex align-items-center">
-                    <button
-                      className="btn btn-sm btn-outline-primary me-2"
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="me-2"
                       onClick={() =>
                         handleUpdateCart(item.productId, item.quantity + 1)
                       }
                     >
                       +
-                    </button>
+                    </Button>
                     <span>{item.quantity}</span>
-                    <button
-                      className="btn btn-sm btn-outline-primary ms-2"
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="ms-2"
                       onClick={() =>
                         handleUpdateCart(item.productId, item.quantity - 1)
                       }
                     >
                       -
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline-danger ms-auto"
+                    </Button>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      className="ms-auto"
                       onClick={() => handleRemoveFromCart(item.productId)}
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
-                </div>
-              </div>
+                </Col>
+              </Row>
             </div>
           ))}
-        </div>
-        <div className="col-md-6">
-          <h2>Price Details</h2>
+        </Col>
+        <Col md={6}>
+          <h3>Price Details</h3>
           <p>
-            Price ({requiredCartItemsFields.length} items): ${getTotalPrice()}
+            Price ({cartItems.length} items): ${totalAmount}
           </p>
           {/* Display discount, delivery charges, etc. */}
           <p>Discount: $0.00</p>
           <p>Delivery Charges: $0.00</p>
           <hr />
-          <p>Total Price: ${getTotalPrice()}</p>
-          <button
-            className="btn btn-primary"
+          <p>Total Price: ${totalAmount}</p>
+          <Button
+            variant="primary"
             onClick={handleCheckout}
             disabled={!isAuthenticated}
+            className="mt-3"
           >
             Checkout
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

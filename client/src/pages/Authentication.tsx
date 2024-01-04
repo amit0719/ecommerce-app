@@ -15,7 +15,6 @@ const Authentication = () => {
   });
   const [otp, setOtp] = useState(null);
   const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
-  const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
 
   const [errors, setErrors] = useState({
     email: "",

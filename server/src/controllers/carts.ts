@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import CartItem from "../models/cart";
-import Product from "../models/product";
+import Product, { IProduct } from "../models/product";
 
 export const getCartItems = async (
   req: Request,
@@ -9,7 +9,7 @@ export const getCartItems = async (
   try {
     const { userId } = req.query;
 
-    // Find all items in the cart for the specified user //.populate("productId")
+    // Find all items in the cart for the specified user
     const cartItems = await CartItem.find({ userId });
 
     // Extract product IDs from cart items
@@ -18,18 +18,35 @@ export const getCartItems = async (
     // Fetch product details for the product IDs
     const products = await Product.find({ _id: { $in: productIds } });
 
-    // Combine cart items with product details
-    const cartWithProductInfo = cartItems.map((item) => {
-      const product = products.find(
+    // Prepare the required response format
+    const formattedCartItems = cartItems.map((item) => {
+      const product: any = products.find(
         (prod) => prod._id.toString() === item.productId.toString()
       );
       return {
-        cartItem: item,
-        productInfo: product,
+        userId: item.userId,
+        productId: item.productId,
+        quantity: item.quantity,
+        name: product.name,
+        price: product.price,
+        image: product.image_url,
+        description: product.description,
+        category: product.category,
       };
     });
 
-    res.status(200).json({ cartItems: cartWithProductInfo });
+    const totalAmount = formattedCartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+
+    // Construct the desired response structure
+    const response = {
+      cartItems: formattedCartItems,
+      totalAmount: totalAmount,
+    };
+
+    res.status(200).json(response);
   } catch (err: any) {
     res
       .status(500)

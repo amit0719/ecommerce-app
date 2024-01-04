@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Order from "../models/order";
 import stripe from "stripe";
+import { generateOrderId } from "../utils/helper";
 
 const stripeClient = new stripe("YOUR_SECRET_KEY", {
   apiVersion: "2020-08-27" as any,
@@ -45,13 +46,13 @@ export const processPayment = async (req: Request, res: Response) => {
 // Controller to create a new order
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { orderID, customer, items, totalAmount, status } = req.body;
+    const { userId, items, totalAmount } = req.body;
+    const orderId = generateOrderId();
     const newOrder = new Order({
-      orderID,
-      customer,
+      orderId: orderId,
+      userId,
       items,
       totalAmount,
-      status,
     });
     const savedOrder = await newOrder.save();
     res.status(201).json(savedOrder);
