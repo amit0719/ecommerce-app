@@ -54,21 +54,20 @@ const ProductDetailView = () => {
                 <p>Price: ${price}</p>
                 <p>{description}</p>
               </div>
-              <OverlayTrigger
-                placement="bottom"
-                overlay={!isAuthenticated && tooltip}
-              >
-                <div>
-                  <Button
-                    variant="primary"
-                    onClick={handleAddToCart}
-                    disabled={!isAuthenticated}
-                    style={{ backgroundColor: "#D10024" }}
-                  >
-                    Add to Cart
-                  </Button>
-                </div>
-              </OverlayTrigger>
+
+              <div>
+                <Button
+                  variant="primary"
+                  onClick={handleAddToCart}
+                  disabled={!isAuthenticated}
+                  style={{ backgroundColor: "#D10024" }}
+                  title={
+                    isAuthenticated ? "" : "Please login to add items to cart"
+                  }
+                >
+                  Add to Cart
+                </Button>
+              </div>
             </div>
           </Col>
         </Row>

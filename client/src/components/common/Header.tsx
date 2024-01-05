@@ -27,10 +27,6 @@ const Header = () => {
     }
   };
 
-  const tooltip = (
-    <Tooltip id="tooltip">Please log in to view your cart items</Tooltip>
-  );
-
   return (
     <Container fluid className="bg-dark py-4">
       <Row className="align-items-center">
@@ -42,7 +38,7 @@ const Header = () => {
         </Col>
 
         {/* Search component */}
-        <Col md={4} className="text-center">
+        <Col md={4} className="text-center ">
           {/* Replace this input with your search component */}
           <input type="text" className="form-control" placeholder="Search..." />
         </Col>
@@ -59,32 +55,32 @@ const Header = () => {
 
         {/* Cart */}
         <Col md={2} className="text-center d-flex align-items-center">
-          <OverlayTrigger
-            placement="bottom"
-            overlay={!isAuthenticated && tooltip}
-          >
-            <div className="text-white position-relative">
-              <i className="fas fa-shopping-cart fa-2x"></i>
-              {isAuthenticated ? (
-                <Link className="text-decoration-none text-reset" to={"cart"}>
-                  <p className="m-0">Your Cart</p>
-                </Link>
-              ) : (
-                <div className="text-decoration-none text-reset">
-                  <p className="m-0">Your Cart</p>
-                </div>
-              )}
-              {/* Cart count badge */}
-              <Badge
-                pill
-                bg="danger"
-                className="position-absolute"
-                style={{ top: "-8px", right: "-8px" }}
+          <div className="text-white position-relative">
+            <i className="fas fa-shopping-cart fa-2x"></i>
+            {isAuthenticated ? (
+              <Link className="text-decoration-none text-reset" to={"cart"}>
+                <p className="m-0">Your Cart</p>
+              </Link>
+            ) : (
+              <div
+                className="text-decoration-none text-reset"
+                title={
+                  isAuthenticated ? "" : "Please login to view the cart items"
+                }
               >
-                {totalQuantity}
-              </Badge>
-            </div>
-          </OverlayTrigger>
+                <p className="m-0">Your Cart</p>
+              </div>
+            )}
+            {/* Cart count badge */}
+            <Badge
+              pill
+              bg="danger"
+              className="position-absolute"
+              style={{ top: "-8px", right: "-8px" }}
+            >
+              {totalQuantity}
+            </Badge>
+          </div>
         </Col>
       </Row>
     </Container>
