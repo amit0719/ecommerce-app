@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 
 export const sendEmail = async (
   recipient: string,
+  subject: string,
   message: string
 ): Promise<void> => {
   try {
@@ -16,7 +17,7 @@ export const sendEmail = async (
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: recipient,
-      subject: "Your Subject Here",
+      subject: subject,
       text: message,
     };
 

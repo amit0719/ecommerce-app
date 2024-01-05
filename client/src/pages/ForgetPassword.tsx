@@ -1,41 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login, verifyOTP } from "../appState/actions/authActions";
+import {
+  login,
+  resetPassword,
+  updatePassword,
+  verifyOTP,
+} from "../appState/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import { fetchCartItems } from "../appState/actions/cartActions";
 
-const Authentication = () => {
+const ForgetPassword = () => {
   const navigateTo = useNavigate();
   const dispatch: any = useDispatch();
-  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [, setIsOtpSent] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [otp, setOtp] = useState(null);
-  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const { isOtpSent, passwordUpdated } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (passwordUpdated) {
+      navigateTo("/login");
+    }
+  }, [passwordUpdated]);
 
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
+    newPassword: "",
+    confirmPassword: "",
   });
-
-  const dispatchRequiredActions = async () => {
-    await dispatch(fetchCartItems({ userId }));
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatchRequiredActions();
-      navigateTo("/");
-    }
-  }, [isAuthenticated]);
 
   const handleSendOTP = () => {
     let formErrors = {
       email: "",
-      password: "",
+      newPassword: "",
+      confirmPassword: "",
     };
 
     let hasError = false;
@@ -45,27 +49,43 @@ const Authentication = () => {
       hasError = true;
     }
 
-    if (formData.password.trim() === "") {
-      formErrors.password = "Password is required";
+    if (formData.newPassword.trim() === "") {
+      formErrors.newPassword = "New Password is required";
+      hasError = true;
+    }
+
+    if (formData.confirmPassword.trim() === "") {
+      formErrors.confirmPassword = "Confirm Password is required";
+      hasError = true;
+    }
+
+    if (formData.confirmPassword.trim() !== formData.newPassword.trim()) {
+      formErrors.confirmPassword = "Passwords do not match";
       hasError = true;
     }
 
     if (hasError) {
       setErrors(formErrors);
     } else {
-      dispatch(login(formData));
+      dispatch(resetPassword(formData));
       setIsOtpSent(true);
       setShowOtpField(true);
     }
   };
 
   const handleResendOTP = () => {
-    dispatch(login(formData));
+    dispatch(resetPassword(formData));
   };
 
   const handleVerifyOTP = () => {
     if (otp) {
-      dispatch(verifyOTP({ otp, email: formData.email }));
+      dispatch(
+        updatePassword({
+          otp,
+          email: formData.email,
+          password: formData.newPassword,
+        })
+      );
       // setIsOtpSent(false);
       // setShowOtpField(false);
     }
@@ -86,7 +106,7 @@ const Authentication = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Login</h2>
+      <h2>Forget Password</h2>
       <form className="login-form">
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
@@ -104,19 +124,38 @@ const Authentication = () => {
           {errors.email && <p className="text-danger">{errors.email}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
+          <label htmlFor="newPassword" className="form-label">
+            New Password
           </label>
           <input
             type="password"
             className="form-control"
-            id="password"
-            name="password"
-            value={formData.password}
+            id="newPassword"
+            name="newPassword"
+            value={formData.newPassword}
             onChange={handleInputChange}
             required
           />
-          {errors.password && <p className="text-danger">{errors.password}</p>}
+          {errors.newPassword && (
+            <p className="text-danger">{errors.newPassword}</p>
+          )}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="confirmPassword" className="form-label">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            required
+          />
+          {errors.confirmPassword && (
+            <p className="text-danger">{errors.confirmPassword}</p>
+          )}
         </div>
         {!showOtpField ? (
           <button
@@ -124,7 +163,7 @@ const Authentication = () => {
             type="button"
             onClick={handleSendOTP}
           >
-            Login
+            Reset
           </button>
         ) : (
           <div className="mb-3">
@@ -159,18 +198,9 @@ const Authentication = () => {
             </div>
           </div>
         )}
-        <div className="mt-3">
-          <a href="/forgot-password">Forgot Password?</a>
-        </div>
-        <div className="justify-content-center mt-3">
-          <span>Don't have an account?</span>
-          <span className="gap-1">
-            <a href="/signup">Sign Up</a>
-          </span>
-        </div>
       </form>
     </div>
   );
 };
 
-export default Authentication;
+export default ForgetPassword;

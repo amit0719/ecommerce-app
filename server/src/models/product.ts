@@ -46,7 +46,7 @@ const productSchema: Schema = new Schema({
   ],
 });
 
-export type IProduct = InferSchemaType<typeof productSchema>;
+export type IProduct = InferSchemaType<typeof productSchema> & { _id: string };
 
 const Product = model<IProduct>("Product", productSchema);
 

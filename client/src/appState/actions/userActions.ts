@@ -5,7 +5,7 @@ export const fetchAllUsers = () => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_USERS_REQUEST" });
     try {
-      const response = await axiosInstance.get("/api/users");
+      const response = await axiosInstance.get("/users");
       dispatch({ type: "FETCH_USERS_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({ type: "FETCH_USERS_FAILURE", payload: error.response.data });

@@ -5,7 +5,7 @@ export const fetchAllCategories = () => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_CATEGORIES_REQUEST" });
     try {
-      const response = await axiosInstance.get("/api/categories");
+      const response = await axiosInstance.get("/categories");
       dispatch({ type: "FETCH_CATEGORIES_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({
@@ -21,7 +21,7 @@ export const fetchCategoryById = (categoryId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_CATEGORY_REQUEST" });
     try {
-      const response = await axiosInstance.get(`/api/categories/${categoryId}`);
+      const response = await axiosInstance.get(`/categories/${categoryId}`);
       dispatch({ type: "FETCH_CATEGORY_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({
@@ -37,7 +37,7 @@ export const fetchCategoryById = (categoryId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "CREATE_CATEGORY_REQUEST" });
 //     try {
-//       const response = await axiosInstance.post("/api/categories/create", categoryData);
+//       const response = await axiosInstance.post("/categories/create", categoryData);
 //       dispatch({ type: "CREATE_CATEGORY_SUCCESS", payload: response.data });
 //     } catch (error) {
 //       dispatch({
@@ -54,7 +54,7 @@ export const fetchCategoryById = (categoryId: string) => {
 //     dispatch({ type: "UPDATE_CATEGORY_REQUEST" });
 //     try {
 //       const response = await axiosInstance.put(
-//         `/api/categories/${categoryId}/update`,
+//         `/categories/${categoryId}/update`,
 //         updatedCategoryData
 //       );
 //       dispatch({ type: "UPDATE_CATEGORY_SUCCESS", payload: response.data });
@@ -72,7 +72,7 @@ export const fetchCategoryById = (categoryId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "DELETE_CATEGORY_REQUEST" });
 //     try {
-//       await axiosInstance.delete(`/api/categories/${categoryId}/delete`);
+//       await axiosInstance.delete(`/categories/${categoryId}/delete`);
 //       dispatch({ type: "DELETE_CATEGORY_SUCCESS", payload: categoryId });
 //     } catch (error) {
 //       dispatch({
