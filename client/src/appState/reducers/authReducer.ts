@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode";
 const initialState = {
   user: null,
   isAuthenticated: false,
+  otpSent: false,
+  passwordUpdated: false,
   loading: false,
   error: null,
 };
@@ -12,6 +14,8 @@ const authReducer = (state = initialState, action: any) => {
     case "REGISTER_REQUEST":
     case "LOGIN_REQUEST":
     case "VERIFY_OTP_REQUEST":
+    case "RESET_PASSWORD_REQUEST":
+    case "UPDATE_PASSWORD_REQUEST":
       return {
         ...state,
         loading: true,
@@ -44,6 +48,7 @@ const authReducer = (state = initialState, action: any) => {
       return {
         ...state,
         loading: false,
+        isOtpSent: false,
         error: action.payload,
       };
     case "LOGOUT":
@@ -52,6 +57,38 @@ const authReducer = (state = initialState, action: any) => {
         userId: null,
         isAuthenticated: false,
       };
+
+    case "RESET_PASSWORD_SUCCESS":
+      console.log("hey action", action);
+      return {
+        ...state,
+        loading: false,
+        isOtpSent: true,
+        error: null,
+      };
+
+    case "RESET_PASSWORD_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        isOtpSent: false,
+        error: action.payload,
+      };
+
+    case "UPDATE_PASSWORD_SUCCESS":
+      return {
+        ...state,
+        passwordUpdated: true,
+        error: null,
+      };
+
+    case "UPDATE_PASSWORD_FAILURE":
+      return {
+        ...state,
+        passwordUpdated: false,
+        error: action.error,
+      };
+
     default:
       return state;
   }

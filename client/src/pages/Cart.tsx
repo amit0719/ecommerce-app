@@ -31,8 +31,8 @@ const CartPage = () => {
     isAuthenticated ? navigate("/checkout") : navigate("/login");
   };
 
-  const getTotalPrice = () =>
-    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  // const getTotalPrice = () =>
+  //   cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   if (cartItems.length === 0) {
     return (

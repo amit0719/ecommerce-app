@@ -45,3 +45,43 @@ export const logout = () => {
     type: "LOGOUT",
   };
 };
+
+// reset password
+
+export const resetPassword = (userData: any) => {
+  return async (dispatch: any) => {
+    dispatch({ type: "RESET_PASSWORD_REQUEST" });
+    try {
+      const response = await axiosInstance.post(
+        "/auth/resetPassword",
+        userData
+      );
+      dispatch({ type: "RESET_PASSWORD_SUCCESS", payload: response.data });
+    } catch (error: any) {
+      dispatch({
+        type: "RESET_PASSWORD_FAILURE",
+        payload: error.response.data,
+      });
+    }
+  };
+};
+
+// update password
+
+export const updatePassword = (userData: any) => {
+  return async (dispatch: any) => {
+    dispatch({ type: "UPDATE_PASSWORD_REQUEST" });
+    try {
+      const response = await axiosInstance.post(
+        "/auth/updatePassword",
+        userData
+      );
+      dispatch({ type: "UPDATE_PASSWORD_SUCCESS", payload: response.data });
+    } catch (error: any) {
+      dispatch({
+        type: "UPDATE_PASSWORD_FAILURE",
+        payload: error.response.data,
+      });
+    }
+  };
+};

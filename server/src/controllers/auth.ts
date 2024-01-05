@@ -101,3 +101,68 @@ export const register = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate and send OTP
+    const OTP = generateOTP(6);
+
+    const currentTime = new Date(); // Current time
+    user.otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME); // Add 5 minutes
+
+    user.otp = 1234; //Number(OTP);
+
+    await user.save();
+    //  await sendOtpEmailToUser(user.email, user.otp);
+
+    return res.status(200).json({ message: "OTP sent to your email", OTP });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  const { email, password, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.otp !== Number(otp)) {
+      return res.status(401).json({ message: "Invalid OTP" });
+    }
+
+    const userDate = new Date(user.otpExpiration as Date);
+    const currentDate = new Date();
+
+    if (userDate < currentDate) {
+      return res.status(401).json({ message: "Expired OTP" });
+    }
+
+    // Clear OTP and expiration time
+    user.otp = null;
+    user.otpExpiration = null;
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword; // Set the new password
+    await user.save(); // Save the updated user
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};

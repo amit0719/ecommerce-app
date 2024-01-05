@@ -16,6 +16,7 @@ import { fetchAllCategories } from "./appState/actions/categoryActions";
 import PageNotFound from "./pages/PageNotFound";
 import PaymentForm from "./pages/PaymentForm";
 import OrderNotification from "./pages/OrderNotification";
+import ForgetPassword from "./pages/ForgetPassword";
 
 function App() {
   const dispatch: any = useDispatch();
@@ -40,6 +41,7 @@ function App() {
             <Route path="profile" element={<UserProfile />} />
             <Route path="login" element={<Authentication />} />
             <Route path="signup" element={<UserRegistration />} />
+            <Route path="forgot-password" element={<ForgetPassword />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Layout>
