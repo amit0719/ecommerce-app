@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 const initialState = {
   user: null,
   isAuthenticated: false,
-  otpSent: false,
+  isOtpSent: false,
   passwordUpdated: false,
   loading: false,
   error: null,

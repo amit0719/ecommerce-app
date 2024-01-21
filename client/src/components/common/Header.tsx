@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Badge, Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../appState/actions/authActions";
 import Brand from "../Brand";
@@ -16,9 +16,9 @@ const Header = () => {
     ? cartItems.reduce((acc, item) => acc + item.quantity, 0)
     : 0;
 
-  const handleLoginLogout = async () => {
+  const handleLoginLogout = () => {
     if (isAuthenticated) {
-      await dispatch(logout());
+      dispatch(logout());
       navigate("/");
     }
   };
@@ -26,15 +26,12 @@ const Header = () => {
   return (
     <Container fluid className="bg-dark py-4">
       <Row className="align-items-center">
-        {/* Brand name */}
         <Col md={4} className="text-center text-md-left">
           <Brand />
         </Col>
-
         <Col md={4} className="text-center">
           <SearchBar />
         </Col>
-
         <User
           isAuthenticated={isAuthenticated}
           handleLoginLogout={handleLoginLogout}

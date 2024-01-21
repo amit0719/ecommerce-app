@@ -8,7 +8,7 @@ const CategoryProductCatalog = () => {
   const { categories } = useSelector((state: any) => state.categories);
   const { products } = useSelector((state: any) => state.products);
   const categoryName =
-    categories?.find((category: any) => category._id === id).name ?? "";
+    categories?.find((category: any) => category._id === id)?.name ?? "";
 
   const productsInCategory =
     products?.filter(

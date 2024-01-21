@@ -50,7 +50,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
     }
 
     if (user.otp !== Number(otp)) {
-      return res.status(401).json({ message: "Invalid OTP" });
+      return res.status(401).json({ message: "Invalid OTP", user, otp });
     }
 
     const userDate = new Date(user.otpExpiration as Date);

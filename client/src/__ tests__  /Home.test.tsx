@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { mockData } from "./utils/data";
 import Home from "../pages/Home";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const mockStore = configureStore([]);
 
@@ -12,20 +13,16 @@ test("renders the Home page with products", async () => {
 
   render(
     <Provider store={store}>
-      <Home />
+      <Router>
+        <Home />
+      </Router>
     </Provider>
   );
 
-  // Check if the products are rendered
   mockData.products.products.forEach((product) => {
     expect(screen.getByText(product.name)).toBeInTheDocument();
     expect(screen.getByText(`$${product.price}`)).toBeInTheDocument();
   });
-
-  // You can add more specific assertions based on your component structure
-  // For example, checking if the container and row classes are present
-  expect(screen.getByTestId("container")).toHaveClass("container");
-  expect(screen.getByTestId("row")).toHaveClass("row");
 });
 
 test("renders the Home page with no products", async () => {

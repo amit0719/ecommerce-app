@@ -35,6 +35,8 @@ export const removeFromCart = (userId: string, productId: string) => {
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
       await axiosInstance.post("/carts/remove", { userId, productId });
+      await dispatch(fetchCartItems({ userId }));
+
       dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
     } catch (error: any) {
       dispatch({
@@ -59,6 +61,9 @@ export const updateCartItem = (
         productId,
         quantity,
       });
+
+      await dispatch(fetchCartItems({ userId }));
+
       dispatch({ type: "UPDATE_CART_ITEM_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({

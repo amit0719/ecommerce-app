@@ -15,18 +15,16 @@ const CartPage = () => {
     (state: any) => state.cart.cartItems
   );
 
- 
+  // const state = useSelector((state: any) => state);
 
-  console.log("hey cart", cartItems);
+  // console.log("hey cart state", state);
 
   const handleUpdateCart = async (itemId, quantity) => {
     await dispatch(updateCartItem(userId, itemId, quantity));
-    await dispatch(fetchCartItems({ userId }));
   };
 
   const handleRemoveFromCart = async (itemId) => {
     await dispatch(removeFromCart(userId, itemId));
-    await dispatch(fetchCartItems({ userId }));
   };
 
   const handleCheckout = () => {
@@ -57,7 +55,11 @@ const CartPage = () => {
         <Col md={6}>
           <h3>Cart</h3>
           {cartItems.map((item) => (
-            <div key={item.productId} className="mb-4 border rounded p-3">
+            <div
+              data-testid={`cart-item-${item.productId}`}
+              key={item.productId}
+              className="mb-4 border rounded p-3"
+            >
               <Row>
                 <Col md={4}>
                   <Image src={item.image} alt={item.name} fluid />
