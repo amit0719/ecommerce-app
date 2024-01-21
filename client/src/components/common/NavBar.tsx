@@ -7,7 +7,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="navbar navbar-expand navbar-light mb-2"
+      className="navbar navbar-expand navbar-light mb-4"
       style={{
         background: "#FFF",
         borderBottom: "2px solid #E4E7ED",

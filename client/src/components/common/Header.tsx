@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../appState/actions/authActions";
 import Brand from "../Brand";
-import SearchBar from "../SearchBar";
 import User from "../User";
 import Cart from "../cart";
 
@@ -24,20 +23,25 @@ const Header = () => {
   };
 
   return (
-    <Container fluid className="bg-dark py-4">
-      <Row className="align-items-center">
-        <Col md={4} className="text-center text-md-left">
+    <Container fluid className="bg-dark py-4 px-4">
+      <div className="d-flex flex-row align-items-center justify-content-between">
+        <div className="text-center ">
           <Brand />
-        </Col>
-        <Col md={4} className="text-center">
-          <SearchBar />
-        </Col>
-        <User
-          isAuthenticated={isAuthenticated}
-          handleLoginLogout={handleLoginLogout}
-        />
-        <Cart isAuthenticated={isAuthenticated} totalQuantity={totalQuantity} />
-      </Row>
+        </div>
+        <div
+          className="d-flex align-items-center justify-content-between"
+          style={{ gap: "20px" }}
+        >
+          <User
+            isAuthenticated={isAuthenticated}
+            handleLoginLogout={handleLoginLogout}
+          />
+          <Cart
+            isAuthenticated={isAuthenticated}
+            totalQuantity={totalQuantity}
+          />
+        </div>
+      </div>
     </Container>
   );
 };

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const User = ({ isAuthenticated, handleLoginLogout }) => {
   return (
-    <Col md={2} className="text-center" onClick={handleLoginLogout}>
+    <Col className="text-center" onClick={handleLoginLogout}>
       <div className="text-white">
         <i className="fas fa-user-circle fa-2x"></i>
         <Link

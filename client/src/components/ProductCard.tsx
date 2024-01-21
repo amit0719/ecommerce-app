@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col } from "react-bootstrap";
 
 const ProductCard = ({ product }: any) => {
   const {
@@ -12,7 +12,7 @@ const ProductCard = ({ product }: any) => {
   } = product;
 
   return (
-    <Col md={4} className="mb-4">
+    <Col sd={4} className="mb-4">
       <Link to={`/product/${id}`} className="text-decoration-none">
         <Card className="text-center h-100">
           <div className="card-img-container">
@@ -27,9 +27,9 @@ const ProductCard = ({ product }: any) => {
             <Card.Title>{name}</Card.Title>
             <Card.Text style={{ color: "#8D99AE" }}>{category}</Card.Text>
             <Card.Text style={{ color: "#8D99AE", flex: "1 0 auto" }}>
-              {discountedPrice ? `$${discountedPrice}` : ""}
+              {discountedPrice ? `₹${Math.round(discountedPrice)}` : ""}
               <span className="font-weight-bold" style={{ color: "#D10024" }}>
-                ${price}
+                {discountedPrice ? <del>{price}</del> : price}
               </span>
             </Card.Text>
           </Card.Body>

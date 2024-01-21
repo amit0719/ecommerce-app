@@ -3,12 +3,12 @@ import ProductCard from "../components/ProductCard";
 
 const Home = () => {
   const { products } = useSelector((state: any) => state.products);
-  const state  = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
 
-  console.log('hey state', state)
+  console.log("hey state", state);
 
-  if(products.length === 0) {
-    return <div>No products available.</div>
+  if (products.length === 0) {
+    return <div>No products available.</div>;
   }
 
   return (
