@@ -15,6 +15,8 @@ const CartPage = () => {
     (state: any) => state.cart.cartItems
   );
 
+ 
+
   console.log("hey cart", cartItems);
 
   const handleUpdateCart = async (itemId, quantity) => {

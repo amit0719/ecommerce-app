@@ -28,7 +28,7 @@ export const login = async (req: Request, res: Response) => {
     const currentTime = new Date(); // Current time
     user.otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME); // Add 5 minutes
 
-    user.otp = 1234; //Number(OTP);
+    user.otp = 1111; //Number(OTP);
 
     await user.save();
     //  await sendOtpEmailToUser(user.email, user.otp);
