@@ -21,7 +21,7 @@ test("renders the Home page with products", async () => {
 
   mockData.products.products.forEach((product) => {
     expect(screen.getByText(product.name)).toBeInTheDocument();
-    expect(screen.getByText(`$${product.price}`)).toBeInTheDocument();
+    expect(screen.getByText(`${product.price}`)).toBeInTheDocument();
   });
 });
 

@@ -22,13 +22,10 @@ const authReducer = (state = initialState, action: any) => {
         error: null,
       };
     case "REGISTER_SUCCESS":
-      // case "LOGIN_SUCCESS":
-      const { userId: registerUserId } = jwtDecode(action.payload.token) as any;
       return {
         ...state,
         loading: false,
         isAuthenticated: true,
-        userId: registerUserId,
         error: null,
       };
     case "VERIFY_OTP_SUCCESS":
@@ -40,7 +37,6 @@ const authReducer = (state = initialState, action: any) => {
         isAuthenticated: true,
         userId: loggedInUserId,
         error: null,
-        // Additional logic for OTP verification
       };
     case "REGISTER_FAILURE":
     case "LOGIN_FAILURE":

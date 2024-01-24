@@ -12,7 +12,7 @@ const ProductCard = ({ product }: any) => {
   } = product;
 
   return (
-    <Col sd={4} className="mb-4">
+    <Col md={4} className="mb-4">
       <Link to={`/product/${id}`} className="text-decoration-none">
         <Card className="text-center h-100">
           <div className="card-img-container">

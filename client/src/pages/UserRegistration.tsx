@@ -2,19 +2,24 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../appState/actions/authActions";
 import { useNavigate } from "react-router-dom";
+import useSignUpFormValidation from "../hooks/useSignUpFormValidation";
 
 const UserRegistration = () => {
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
+  const { validateForm, errors, resetErrors } = useSignUpFormValidation();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
+  const {
+    isAuthenticated,
+    error: apiError,
+    loading,
+  } = useSelector((state: any) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,8 +37,11 @@ const UserRegistration = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData) {
+    const isValid = validateForm(formData);
+
+    if (isValid) {
       dispatch(register(formData));
+      resetErrors();
     }
   };
 
@@ -82,6 +90,37 @@ const UserRegistration = () => {
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="confirmPassword" className="form-label">
+            Confirm password
+          </label>
+          <input
+            type="confirmPassword"
+            className="form-control"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        {!loading && apiError && (
+          <div className="mb3">
+            <span className="text-danger">{apiError.message}</span>
+          </div>
+        )}
+        <div className="mb-3">
+          <span className="text-danger">{errors.username}</span>
+        </div>
+        <div className="mb-3">
+          <span className="text-danger">{errors.email}</span>
+        </div>
+        <div className="mb-3">
+          <span className="text-danger">{errors.password}</span>
+        </div>
+        <div className="mb-3">
+          <span className="text-danger">{errors.confirmPassword}</span>
         </div>
         <button type="submit" className="btn btn-primary">
           Sign Up
