@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createOrder } from "../appState/actions/orderActions";
 import ShippingForm from "../components/checkout/ShippingForm";
 import Summary from "../components/checkout/Summary";
 import CartReview from "../components/checkout/CartReview";
 
 const CheckoutPage = () => {
-  const navigate = useNavigate();
-  const dispatch: any = useDispatch();
-  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const navigateTo = useNavigate();
   const { cartItems = [], totalAmount } = useSelector(
     (state: any) => state.cart.cartItems
   );
@@ -26,24 +23,50 @@ const CheckoutPage = () => {
     shippingMethod: "standard",
   });
 
+  const [formErrors, setFormErrors] = useState({
+    firstName: false,
+    lastName: false,
+    addressLine1: false,
+    pinCode: false,
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+
+    setFormErrors({
+      ...formErrors,
+      [name]: false,
+    });
+  };
+
+  const validateForm = () => {
+    const requiredFields = ["firstName", "lastName", "addressLine1", "pinCode"];
+    const errors = {};
+
+    requiredFields.forEach((field) => {
+      if (!formData[field]) {
+        errors[field] = true;
+      }
+    });
+
+    setFormErrors(errors as any);
+    return Object.keys(errors).length === 0;
   };
 
   const handleContinueToBilling = async (e) => {
     e.preventDefault();
 
-    // const orderData = {
-    //   customer,
-    //   items,
-    //   totalAmount,
-    // };
-    await dispatch(createOrder({ orderId: 12345, status: "pending" }));
-    // navigate("/payment");
+    // Validate the form
+    if (!validateForm()) {
+      // Display error messages and prevent navigation
+      return;
+    }
+
+    navigateTo("/payment");
   };
 
   if (cartItems.length === 0) {
@@ -58,6 +81,7 @@ const CheckoutPage = () => {
             formData={formData}
             handleInputChange={handleInputChange}
             handleContinueToBilling={handleContinueToBilling}
+            formErrors={formErrors}
           />
         </div>
 

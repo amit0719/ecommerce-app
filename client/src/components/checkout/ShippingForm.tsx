@@ -5,7 +5,10 @@ const ShippingForm = ({
   handleContinueToBilling,
   handleInputChange,
   formData,
+  formErrors = {},
 }) => {
+  const isInvalid = Object.values(formErrors).some((value) => value === true);
+
   return (
     <div
       style={{
@@ -135,6 +138,12 @@ const ShippingForm = ({
               </label>
             </div>
           ))}
+
+          {isInvalid && (
+            <div className="mb-3">
+              <p className="text-danger">{"Please fill the required fileds"}</p>
+            </div>
+          )}
         </div>
 
         <button
