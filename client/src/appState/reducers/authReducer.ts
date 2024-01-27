@@ -29,7 +29,6 @@ const authReducer = (state = initialState, action: any) => {
         error: null,
       };
     case "VERIFY_OTP_SUCCESS":
-      console.log("hey action", action);
       const { userId: loggedInUserId } = jwtDecode(action.payload.token) as any;
       return {
         ...state,

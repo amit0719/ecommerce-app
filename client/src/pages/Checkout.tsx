@@ -2,11 +2,16 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createOrder } from "../appState/actions/orderActions";
+import { indianStates } from "../utils/indianStates";
+import { SHIPPING_METHODS } from "../utils/constants";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const dispatch: any = useDispatch();
   const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const { cartItems = [], totalAmount } = useSelector(
+    (state: any) => state.cart.cartItems
+  );
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -20,27 +25,10 @@ const CheckoutPage = () => {
     shippingMethod: "standard",
   });
 
-  const storageKey = isAuthenticated ? userId : "guest";
-  const { cartItems = [], totalPrice = 0 } = JSON.parse(
-    localStorage.getItem(storageKey)
-  );
-
-  const indianStates = [
-    "Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    // Add other Indian states here
-  ];
-
-  const subtotal = totalPrice;
+  const subtotal = totalAmount;
   const shippingCharge = 0;
   const tax = 50;
   const total = subtotal + shippingCharge + tax;
-
-  const saveCheckoutInfoToLocalStorage = () => {
-    const updatedData = { cartItems, totalPrice: total, checkout: formData };
-    localStorage.setItem(storageKey, JSON.stringify(updatedData));
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +40,7 @@ const CheckoutPage = () => {
 
   const handleContinueToBilling = async (e) => {
     e.preventDefault();
-    saveCheckoutInfoToLocalStorage();
+
     // const orderData = {
     //   customer,
     //   items,
@@ -74,94 +62,77 @@ const CheckoutPage = () => {
             <h2>Shipping</h2>
           </div>
           <form onSubmit={handleContinueToBilling}>
-            {/* Form fields for shipping details */}
-            {/* Example: */}
             <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">
-                First Name *
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="firstName"
                 name="firstName"
+                placeholder="First Name *"
                 value={formData.firstName}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">
-                Last Name *
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="lastName"
                 name="lastName"
+                placeholder="Last Name *"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="addressLine1" className="form-label">
-                Address Line 1 *
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="addressLine1"
                 name="addressLine1"
+                placeholder="Address Line 1 *"
                 value={formData.addressLine1}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="addressLine2" className="form-label">
-                Address Line 2
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="addressLine2"
                 name="addressLine2"
+                placeholder="Address Line 2"
                 value={formData.addressLine2}
                 onChange={handleInputChange}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="pinCode" className="form-label">
-                Pin Code *
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="pinCode"
                 name="pinCode"
+                placeholder="Pin Code *"
                 value={formData.pinCode}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="city" className="form-label">
-                City
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="city"
                 name="city"
+                placeholder="City"
                 value={formData.city}
                 onChange={handleInputChange}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="state" className="form-label">
-                State
-              </label>
               <select
                 className="form-select"
                 id="state"
@@ -178,15 +149,13 @@ const CheckoutPage = () => {
               </select>
             </div>
             <div className="mb-3">
-              <label htmlFor="country" className="form-label">
-                Country
-              </label>
               <input
                 type="text"
                 className="form-control"
                 id="country"
                 name="country"
                 value={formData.country}
+                placeholder="Country"
                 onChange={handleInputChange}
                 disabled // Country defaulted to India
               />
@@ -194,35 +163,27 @@ const CheckoutPage = () => {
 
             {/* Shipping Method */}
             <div className="mb-3">
-              <label className="form-label">Shipping Method</label>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="shippingMethod"
-                  id="standardShipping"
-                  value="standard"
-                  checked={formData.shippingMethod === "standard"}
-                  onChange={handleInputChange}
-                />
-                <label className="form-check-label" htmlFor="standardShipping">
-                  Standard (Free)
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="shippingMethod"
-                  id="expressShipping"
-                  value="express"
-                  checked={formData.shippingMethod === "express"}
-                  onChange={handleInputChange}
-                />
-                <label className="form-check-label" htmlFor="expressShipping">
-                  Express ($50)
-                </label>
-              </div>
+              {Object.entries(SHIPPING_METHODS).map(
+                ([key, { label, charge }]) => (
+                  <div key={key} className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="shippingMethod"
+                      id={`${key}Shipping`}
+                      value={key}
+                      checked={formData.shippingMethod === key}
+                      onChange={handleInputChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor={`${key}Shipping`}
+                    >
+                      {label}
+                    </label>
+                  </div>
+                )
+              )}
             </div>
 
             <button type="submit" className="btn btn-primary">

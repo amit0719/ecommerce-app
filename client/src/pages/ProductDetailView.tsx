@@ -1,12 +1,5 @@
 import { useParams } from "react-router-dom";
-import {
-  Button,
-  Col,
-  Container,
-  Row,
-  Tooltip,
-  OverlayTrigger,
-} from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "../appState/actions/cartActions";
 import { useEffect } from "react";
@@ -31,10 +24,6 @@ const ProductDetailView = () => {
       await dispatch(fetchCartItems({ userId }));
     }
   };
-
-  const tooltip = (
-    <Tooltip id="tooltip">Please login to add items to cart</Tooltip>
-  );
 
   return (
     <Container className="mt-4">
