@@ -1,16 +1,11 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from "react-router-dom";
 import Brand from "../components/Brand";
+import { renderWithProviders } from "./utils/TestWrapper";
 
 describe("Brand component", () => {
   test('renders brand link with text "Electro"', () => {
-    render(
-      <Router>
-        <Brand />
-      </Router>
-    );
+    renderWithProviders(<Brand />);
 
     const brandLink = screen.getByRole("link", { name: /Electro/i });
     expect(brandLink).toBeInTheDocument();
@@ -18,11 +13,7 @@ describe("Brand component", () => {
   });
 
   test("navigates to the home page when the link is clicked", () => {
-    render(
-      <Router>
-        <Brand />
-      </Router>
-    );
+    renderWithProviders(<Brand />);
 
     const brandLink = screen.getByRole("link", { name: /Electro/i });
     expect(brandLink.getAttribute("href")).toBe("/");

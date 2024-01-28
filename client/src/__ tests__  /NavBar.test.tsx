@@ -1,13 +1,12 @@
-import React from "react";
 import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Navbar from "../components/common/NavBar";
 import { mockData } from "./utils/data";
-import { customRender } from "./utils/TestWrapper";
+import { renderWithProviders } from "./utils/TestWrapper";
 
 describe("Navbar component", () => {
   test("renders featured categories correctly", () => {
-    customRender(<Navbar />);
+    renderWithProviders(<Navbar />);
 
     mockData.categories.categories
       .filter((category) => category.isFeatured)
