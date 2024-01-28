@@ -1,85 +1,93 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Authentication from "../pages/Authentication";
+import { renderWithProviders } from "./utils/TestWrapper";
+import configureStore from "redux-mock-store";
+import "@testing-library/jest-dom";
 
-// describe("Authentication", () => {
-//   test("sets formData state on input change", () => {
-//     render(<Authentication />);
+const mockStore = configureStore([]);
+describe("Authentication", () => {
+  const store = mockStore({
+    auth: {
+      user: null,
+      isAuthenticated: false,
+      isOtpSent: false,
+      passwordUpdated: false,
+      loading: false,
+      error: null,
+    },
+  });
+  test("sets formData state on input change", () => {
+    renderWithProviders(<Authentication />, store);
 
-//     const emailInput = screen.getByLabelText("Email");
-//     userEvent.type(emailInput, "test@example.com");
+    const emailInput = screen.getByLabelText("Email");
+    userEvent.type(emailInput, "test@example.com");
 
-//     const passwordInput = screen.getByLabelText("Password");
-//     userEvent.type(passwordInput, "password123");
+    const passwordInput = screen.getByLabelText("Password");
+    userEvent.type(passwordInput, "password123");
 
-//     expect(emailInput).toHaveValue("test@example.com");
-//     expect(passwordInput).toHaveValue("password123");
-//   });
+    expect(emailInput).toHaveValue("test@example.com");
+    expect(passwordInput).toHaveValue("password123");
+  });
 
-//   test("clears form errors on input change", () => {
-//     // render with error
-//     const { rerender } = render(<Authentication />);
+  test("clears form errors on input change", () => {
+    renderWithProviders(<Authentication />, store);
 
-//     // trigger errors
-//     const emailInput = screen.getByLabelText("Email");
-//     userEvent.clear(emailInput);
+    // trigger errors
+    const emailInput = screen.getByLabelText("Email");
+    userEvent.clear(emailInput);
 
-//     const passwordInput = screen.getByLabelText("Password");
-//     userEvent.clear(passwordInput);
+    const passwordInput = screen.getByLabelText("Password");
+    userEvent.clear(passwordInput);
 
-//     expect(screen.getByText("Email is required")).toBeInTheDocument();
-//     expect(screen.getByText("Password is required")).toBeInTheDocument();
+    userEvent.click(screen.getByRole("button", { name: "Login" }));
 
-//     // type input to clear errors
-//     userEvent.type(emailInput, "test@test.com");
-//     userEvent.type(passwordInput, "password123");
+    expect(screen.getByText("Email is required")).toBeInTheDocument();
+    expect(screen.getByText("Password is required")).toBeInTheDocument();
 
-//     expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
-//     expect(screen.queryByText("Password is required")).not.toBeInTheDocument();
-//   });
+    // type input to clear errors
+    userEvent.type(emailInput, "test@test.com");
+    userEvent.type(passwordInput, "password123");
 
-//   // test submitting form
-//   test("calls login action on form submit", () => {
-//     const dispatch = jest.fn();
-//     render(<Authentication dispatch={dispatch} />);
+    expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+    expect(screen.queryByText("Password is required")).not.toBeInTheDocument();
+  });
 
-//     userEvent.type(screen.getByLabelText("Email"), "test@test.com");
-//     userEvent.type(screen.getByLabelText("Password"), "password123");
+  //test submitting form
+  test("calls login action on form submit", async () => {
+    const dispatch = jest.fn();
+    const login = jest.fn();
+    renderWithProviders(<Authentication />, store);
 
-//     userEvent.click(screen.getByRole("button", { name: "Login" }));
+    userEvent.type(screen.getByLabelText("Email"), "test@test.com");
+    userEvent.type(screen.getByLabelText("Password"), "password123");
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       login({
-//         email: "test@test.com",
-//         password: "password123",
-//       })
-//     );
-//   });
+    await userEvent.click(screen.getByRole("button", { name: "Login" }));
 
-//   // test verifying OTP
-//   test("calls verifyOTP action when OTP submitted", () => {
-//     const dispatch = jest.fn();
-//     render(<Authentication dispatch={dispatch} />);
+    expect(dispatch).toHaveBeenCalledWith(
+      login({
+        email: "test@test.com",
+        password: "password123",
+      })
+    );
+  });
 
-//     // show OTP field
-//     userEvent.type(screen.getByLabelText("Email"), "test@test.com");
-//     userEvent.type(screen.getByLabelText("Password"), "password123");
-//     userEvent.click(screen.getByRole("button", { name: "Login" }));
+  test("calls verifyOTP action when OTP submitted", () => {
+    const dispatch = jest.fn();
+    const verifyOTP = jest.fn();
+    renderWithProviders(<Authentication />, store);
 
-//     // submit OTP
-//     userEvent.type(screen.getByLabelText("Enter OTP"), "123456");
-//     userEvent.click(screen.getByRole("button", { name: "Verify OTP" }));
+    // show OTP field
+    userEvent.type(screen.getByLabelText("Email"), "test@test.com");
+    userEvent.type(screen.getByLabelText("Password"), "password123");
+    userEvent.click(screen.getByRole("button", { name: "Login" }));
 
-//     expect(dispatch).toHaveBeenCalledWith(
-//       verifyOTP({ otp: "123456", email: "test@test.com" })
-//     );
-//   });
+    // submit OTP
+    userEvent.type(screen.getByLabelText("Enter OTP"), "123456");
+    userEvent.click(screen.getByRole("button", { name: "Verify OTP" }));
 
-//   // test navigation
-//   test("navigates to / on auth success", () => {
-//     const navigate = jest.fn();
-//     render(<Authentication navigate={navigate} isAuthenticated />);
-
-//     expect(navigate).toHaveBeenCalledWith("/");
-//   });
-// });
+    expect(dispatch).toHaveBeenCalledWith(
+      verifyOTP({ otp: "123456", email: "test@test.com" })
+    );
+  });
+});

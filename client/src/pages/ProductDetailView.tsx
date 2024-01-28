@@ -18,10 +18,11 @@ const ProductDetailView = () => {
     }
   }, [product, id]);
 
-  const handleAddToCart = async () => {
-    if (userId) {
-      await dispatch(addToCart({ productId: id, userId }));
-      await dispatch(fetchCartItems({ userId }));
+  const handleAddToCart = () => {
+    if (isAuthenticated) {
+      console.log("hey clicked");
+      dispatch(addToCart({ productId: id, userId }));
+      dispatch(fetchCartItems({ userId }));
     }
   };
 

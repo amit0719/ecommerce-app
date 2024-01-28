@@ -1,69 +1,100 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
 import UserRegistration from "../pages/UserRegistration";
+import { BrowserRouter as Router } from "react-router-dom";
+import "@testing-library/jest-dom";
+import thunk from "redux-thunk";
+import * as authActions from "../appState/actions/authActions";
 
-// describe("UserRegistration", () => {
-//   test("renders form fields", () => {
-//     render(<UserRegistration />);
+const middlewares = () => thunk;
+const mockStore = configureStore(middlewares);
 
-//     expect(screen.getByLabelText("Username")).toBeInTheDocument();
-//     expect(screen.getByLabelText("Email address")).toBeInTheDocument();
-//     expect(screen.getByLabelText("Password")).toBeInTheDocument();
-//     expect(screen.getByLabelText("Confirm password")).toBeInTheDocument();
-//   });
+describe("UserRegistration", () => {
+  let store;
+  let mockRegister;
 
-//   test("updates form data on input change", () => {
-//     render(<UserRegistration />);
+  beforeEach(() => {
+    store = mockStore({
+      auth: {
+        isAuthenticated: false,
+        loading: false,
+        error: null,
+      },
+    });
 
-//     const usernameInput = screen.getByLabelText("Username");
-//     userEvent.type(usernameInput, "testUser");
-//     expect(usernameInput).toHaveValue("testUser");
+    mockRegister = jest.spyOn(authActions, "register");
+    mockRegister.mockReturnValue(Promise.resolve()); // Mocking an asynchronous action
+  });
 
-//     const emailInput = screen.getByLabelText("Email address");
-//     userEvent.type(emailInput, "test@example.com");
-//     expect(emailInput).toHaveValue("test@example.com");
-//   });
+  jest.mock("../appState/actions/authActions", () => ({
+    register: mockRegister,
+  }));
 
-//   test("dispatches register action on form submit", () => {
-//     const dispatch = jest.fn();
-//     render(<UserRegistration dispatch={dispatch} />);
+  test("renders form fields", () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <UserRegistration />
+        </Router>
+      </Provider>
+    );
 
-//     const usernameInput = screen.getByLabelText("Username");
-//     userEvent.type(usernameInput, "testUser");
+    expect(screen.getByLabelText("Username")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(screen.getByLabelText("Confirm password")).toBeInTheDocument();
+  });
 
-//     const emailInput = screen.getByLabelText("Email address");
-//     userEvent.type(emailInput, "test@example.com");
+  test("updates form data on input change", () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <UserRegistration />
+        </Router>
+      </Provider>
+    );
 
-//     const passwordInput = screen.getByLabelText("Password");
-//     userEvent.type(passwordInput, "password123");
+    const usernameInput = screen.getByLabelText("Username");
+    userEvent.type(usernameInput, "testUser");
+    expect(usernameInput).toHaveValue("testUser");
 
-//     const confirmPasswordInput = screen.getByLabelText("Confirm password");
-//     userEvent.type(confirmPasswordInput, "password123");
+    const emailInput = screen.getByLabelText("Email address");
+    userEvent.type(emailInput, "test@example.com");
+    expect(emailInput).toHaveValue("test@example.com");
+  });
 
-//     userEvent.click(screen.getByRole("button", { name: "Sign Up" }));
+  test("dispatches register action on form submit", () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <UserRegistration />
+        </Router>
+      </Provider>
+    );
 
-//     expect(dispatch).toHaveBeenCalledWith({
-//       type: "register",
-//       payload: {
-//         username: "testUser",
-//         email: "test@example.com",
-//         password: "password123",
-//       },
-//     });
-//   });
+    const usernameInput = screen.getByLabelText("Username");
+    userEvent.type(usernameInput, "testUser");
 
-//   test("displays validation errors", () => {
-//     render(<UserRegistration />);
+    const emailInput = screen.getByLabelText("Email address");
+    userEvent.type(emailInput, "test@example.com");
 
-//     const submitBtn = screen.getByRole("button", { name: "Sign Up" });
-//     userEvent.click(submitBtn);
+    const passwordInput = screen.getByLabelText("Password");
+    userEvent.type(passwordInput, "password123");
 
-//     expect(screen.getByText("Username is required")).toBeInTheDocument();
-//     expect(screen.getByText("Email is required")).toBeInTheDocument();
-//     expect(screen.getByText("Password is required")).toBeInTheDocument();
-//     expect(
-//       screen.getByText("Confirm password is required")
-//     ).toBeInTheDocument();
-//   });
-// });
+    const confirmPasswordInput = screen.getByLabelText("Confirm password");
+    userEvent.type(confirmPasswordInput, "password123");
+
+    userEvent.click(screen.getByRole("button", { name: "Sign Up" }));
+
+    expect(mockRegister).toHaveBeenCalledWith({
+      type: "register",
+      payload: {
+        username: "testUser",
+        email: "test@example.com",
+        password: "password123",
+      },
+    });
+  });
+});

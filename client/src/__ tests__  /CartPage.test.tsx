@@ -1,15 +1,21 @@
-import React from "react";
-import { screen, fireEvent, within, waitFor } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { customRender } from "./utils/TestWrapper";
+import { renderWithProviders } from "./utils/TestWrapper";
 import CartPage from "../pages/Cart";
 import { mockData } from "./utils/data";
+import {
+  fetchCartItems,
+  removeFromCart,
+} from "../appState/actions/cartActions";
+import configureStore from "redux-mock-store";
+
+const mockStore = configureStore([]);
 
 describe("CartPage component", () => {
   const mockCartItems = mockData.cart.cartItems.cartItems;
-  const totalAmount = mockData.cart.cartItems.totalAmount;
+
   test("renders empty cart message", () => {
-    customRender(<CartPage />);
+    renderWithProviders(<CartPage />);
 
     const emptyCartMessage = screen.getByRole("alert");
     expect(emptyCartMessage).toBeInTheDocument();
@@ -20,7 +26,7 @@ describe("CartPage component", () => {
   });
 
   test("renders cart items and price details", () => {
-    customRender(<CartPage />);
+    renderWithProviders(<CartPage />);
 
     expect(screen.getByText(/cart/i)).toBeInTheDocument();
 
@@ -36,46 +42,37 @@ describe("CartPage component", () => {
     ).toBeInTheDocument();
   });
 
-  //   test("updates cart item quantity", async () => {
-  //     const updateCartItem = jest.fn();
-  //     customRender(<CartPage />);
+  test("updates cart item quantity", async () => {
+    const updateCartItem = jest.fn();
+    renderWithProviders(<CartPage />);
 
-  //     const cartItemConatiner = screen.getByTestId(
-  //       "cart-item-65894cfd20789e0bf6a8140f"
-  //     );
+    const cartItemConatiner = screen.getByTestId(
+      "cart-item-65894cfd20789e0bf6a8140f"
+    );
 
-  //     fireEvent.click(within(cartItemConatiner).getByText("+"));
-  //     expect(updateCartItem).toHaveBeenCalledWith(
-  //       "65acff049c7467c00f67191a",
-  //       "1",
-  //       2
-  //     );
-  //   });
+    fireEvent.click(within(cartItemConatiner).getByText("+"));
+    expect(updateCartItem).toHaveBeenCalledWith(
+      "65acff049c7467c00f67191a",
+      "1",
+      2
+    );
+  });
 
-  //   test("removes cart item", async () => {
-  //     const store = mockStore({
-  //       auth: { isAuthenticated: true, userId: "testUserId" },
-  //       cart: {
-  //         cartItems: {
-  //           cartItems: [{ productId: "1", quantity: 1 }],
-  //           totalAmount: 19.99,
-  //         },
-  //       },
-  //     });
+  test("removes cart item", async () => {
+    const store = mockStore({
+      auth: { isAuthenticated: true, userId: "testUserId" },
+      cart: {
+        cartItems: {
+          cartItems: [{ productId: "1", quantity: 1 }],
+          totalAmount: 19.99,
+        },
+      },
+    });
 
-  //     customRender(<CartPage />, { store });
+    renderWithProviders(<CartPage />, { store });
 
-  //     // Click the "Remove" button to remove the cart item
-  //     fireEvent.click(screen.getByText(/remove/i));
-  //     expect(removeFromCart).toHaveBeenCalledWith("testUserId", "1");
-  //     expect(fetchCartItems).toHaveBeenCalledWith({ userId: "testUserId" });
-  //   });
-
-  //   test("navigates to checkout on checkout button click", () => {
-  //     customRender(<CartPage />);
-
-  //     // Click the "Checkout" button
-  //     fireEvent.click(screen.getByRole("button", { name: /checkout/i }));
-  //     expect(useNavigate).toHaveBeenCalledWith("/checkout");
-  //   });
+    fireEvent.click(screen.getByText(/remove/i));
+    expect(removeFromCart).toHaveBeenCalledWith("testUserId", "1");
+    expect(fetchCartItems).toHaveBeenCalledWith({ userId: "testUserId" });
+  });
 });

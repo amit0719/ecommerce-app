@@ -25,7 +25,7 @@ const UserRegistration = () => {
     if (isAuthenticated) {
       navigate("/");
     }
-  });
+  }, [isAuthenticated]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
