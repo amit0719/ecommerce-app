@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  login,
-  resetPassword,
-  updatePassword,
-  verifyOTP,
-} from "../appState/actions/authActions";
+import { resetPassword, updatePassword } from "../appState/actions/authActions";
 import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {

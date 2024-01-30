@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import ProductDetailView from "./pages/ProductDetailView";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import UserProfile from "./pages/UserProfile";
 import Authentication from "./pages/Authentication";
 import Layout from "./components/common/Layout";
 import CategoryProductCatalog from "./pages/CategoryProductCatalog";
@@ -63,14 +62,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderNotification />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <ProtectedRoute>
-                <UserProfile />
               </ProtectedRoute>
             }
           />
