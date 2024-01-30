@@ -17,6 +17,7 @@ import PageNotFound from "./pages/PageNotFound";
 import Payment from "./pages/Payment";
 import OrderNotification from "./pages/OrderNotification";
 import ForgetPassword from "./pages/ForgetPassword";
+import { ProtectedRoute } from "./components/Routes/ProtectedRoute";
 
 function App() {
   const dispatch: any = useDispatch();
@@ -33,11 +34,46 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="category/:id" element={<CategoryProductCatalog />} />
           <Route path="product/:id" element={<ProductDetailView />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="payment" element={<Payment />} />
-          <Route path="orderNotification" element={<OrderNotification />} />
-          <Route path="profile" element={<UserProfile />} />
+          <Route
+            path="cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="orderNotification"
+            element={
+              <ProtectedRoute>
+                <OrderNotification />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
           <Route path="login" element={<Authentication />} />
           <Route path="signup" element={<UserRegistration />} />
           <Route path="forgot-password" element={<ForgetPassword />} />

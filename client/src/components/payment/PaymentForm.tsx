@@ -19,8 +19,6 @@ const PaymentForm = () => {
       "payment_intent_client_secret"
     );
 
-    console.log("hey in BF clientSecret", clientSecret);
-
     if (!clientSecret) {
       return;
     }
