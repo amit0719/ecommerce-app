@@ -3,43 +3,36 @@ import Order from "../models/order";
 import stripe from "stripe";
 import { generateOrderId } from "../utils/helper";
 
-const stripeClient = new stripe("YOUR_SECRET_KEY", {
-  apiVersion: "2020-08-27" as any,
-});
+const stripeClient = new stripe(
+  "sk_test_51OdBm3SAISpOZ71vHekzrnTbMMqC4zTZsdhJLbtPzGRJbWAuMdlrQRZSvcFd74BJSfNDnHvByXNduqRcYXPigUJH00qTBz7P2T"
+);
 
 export const processPayment = async (req: Request, res: Response) => {
-  const { paymentMethodId, orderId } = req.body;
+  const { userId, cartItems, totalAmount } = req.body;
 
   try {
-    // Use Stripe API to confirm the payment with the paymentMethodId
-    const payment = await stripeClient.paymentIntents.create({
-      amount: 1000, // Replace with the actual amount in cents
-      currency: "usd", // Replace with the desired currency
-      payment_method: paymentMethodId,
-      confirm: true,
+    //Use Stripe API to confirm the payment with the paymentMethodId
+    const paymentIntent = await stripeClient.paymentIntents.create({
+      amount: 1000,
+      currency: "inr",
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
-    if (payment.status === "succeeded") {
-      // Update order status to 'paid' in your database (simulated in this example)
-      const updatedOrder = {
-        _id: orderId,
-        paymentStatus: "Paid",
-      };
-
-      // Simulated logic to update order status, replace with your DB logic
-      await Order.findByIdAndUpdate(orderId, { paymentStatus: "Paid" });
-
-      return res
-        .status(200)
-        .json({ message: "Payment successful", updatedOrder });
-    } else {
-      return res.status(400).json({ error: "Payment failed" });
+    // respond with the client secret and id of the new paymentintent
+    if (paymentIntent.client_secret) {
     }
+
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
     console.error("Error occurred while processing payment:", error);
-    return res
-      .status(500)
-      .json({ error: "An error occurred while processing payment" });
+    return res.status(500).json({
+      error: "An error occurred while processing payment",
+      error1: error,
+    });
   }
 };
 
@@ -48,14 +41,16 @@ export const createOrder = async (req: Request, res: Response) => {
   try {
     const { userId, items, totalAmount } = req.body;
     const orderId = generateOrderId();
+
     const newOrder = new Order({
-      orderId: orderId,
       userId,
       items,
       totalAmount,
     });
+
     const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
+
+    res.status(200).json(savedOrder._id);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

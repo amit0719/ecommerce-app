@@ -1,8 +1,9 @@
 const initialState = {
   orders: [],
-  order: null,
+  orderId: null,
   loading: false,
   error: null,
+  payment: null,
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -16,7 +17,7 @@ const orderReducer = (state = initialState, action) => {
     case "FETCH_ORDER_BY_ID_REQUEST":
       return { ...state, loading: true, error: null };
     case "FETCH_ORDER_BY_ID_SUCCESS":
-      return { ...state, loading: false, order: action.payload };
+      return { ...state, loading: false, orderId: action.payload };
     case "FETCH_ORDER_BY_ID_FAILURE":
       return { ...state, loading: false, error: action.payload };
     case "CANCEL_ORDER_REQUEST":
@@ -30,8 +31,7 @@ const orderReducer = (state = initialState, action) => {
     case "CREATE_ORDER_REQUEST":
       return { ...state, loading: true, error: null };
     case "CREATE_ORDER_SUCCESS":
-      // Handle successful create order action
-      return state;
+      return { ...state, loading: false, orderId: action.payload };
     case "CREATE_ORDER_FAILURE":
       return { ...state, loading: false, error: action.payload };
 
@@ -46,8 +46,7 @@ const orderReducer = (state = initialState, action) => {
     case "PROCESS_PAYMENT_REQUEST":
       return { ...state, loading: true, error: null };
     case "PROCESS_PAYMENT_SUCCESS":
-      // Handle successful process payment action
-      return state;
+      return { ...state, loading: false, payment: action.payload };
     case "PROCESS_PAYMENT_FAILURE":
       return { ...state, loading: false, error: action.payload };
 

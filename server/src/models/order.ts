@@ -2,7 +2,6 @@ import { Document, Schema, model } from "mongoose";
 
 // Define an interface for the Order document
 interface IOrder extends Document {
-  orderID: string;
   userId: string;
   items: {
     productId: string; // You might reference a Product schema here
@@ -19,11 +18,6 @@ interface IOrder extends Document {
 // Define the schema for the Order
 const OrderSchema: Schema = new Schema(
   {
-    orderID: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     items: [
       {

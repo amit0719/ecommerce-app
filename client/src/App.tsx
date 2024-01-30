@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { fetchAllProducts } from "./appState/actions/productActions";
 import { fetchAllCategories } from "./appState/actions/categoryActions";
 import PageNotFound from "./pages/PageNotFound";
-import PaymentForm from "./pages/PaymentForm";
+import Payment from "./pages/Payment";
 import OrderNotification from "./pages/OrderNotification";
 import ForgetPassword from "./pages/ForgetPassword";
 
@@ -35,7 +35,7 @@ function App() {
           <Route path="product/:id" element={<ProductDetailView />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="payment" element={<PaymentForm />} />
+          <Route path="payment" element={<Payment />} />
           <Route path="orderNotification" element={<OrderNotification />} />
           <Route path="profile" element={<UserProfile />} />
           <Route path="login" element={<Authentication />} />
