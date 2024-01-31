@@ -1,4 +1,7 @@
-#payment-form {
+#payment-form,
+.login-form,
+.registration-form,
+.forget-password-form {
   width: 30vw;
   min-width: 500px;
   align-self: center;

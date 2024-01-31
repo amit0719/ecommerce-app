@@ -100,9 +100,9 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="forget-password-form">
       <h2>Forget Password</h2>
-      <form className="login-form">
+      <form>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email

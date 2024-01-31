@@ -85,9 +85,9 @@ const Authentication = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="login-form">
       <h2>Login</h2>
-      <form className="login-form">
+      <form>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email
