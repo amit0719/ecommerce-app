@@ -58,7 +58,7 @@ function App() {
             }
           />
           <Route
-            path="orderNotification"
+            path="order-notification"
             element={
               <ProtectedRoute>
                 <OrderNotification />

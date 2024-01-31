@@ -8,13 +8,16 @@ const stripeClient = new stripe(
 );
 
 export const processPayment = async (req: Request, res: Response) => {
-  const { userId, cartItems, totalAmount } = req.body;
+  const { totalAmount } = req.body;
 
   try {
     //Use Stripe API to confirm the payment with the paymentMethodId
     const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: 1000,
+      amount: totalAmount,
       currency: "inr",
+      description: "payment",
+      payment_method_types: ["card"],
+      confirm: true,
       automatic_payment_methods: {
         enabled: true,
       },

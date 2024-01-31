@@ -5,18 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { processPayment } from "../appState/actions/orderActions";
 import PaymentForm from "../components/payment/PaymentForm";
 
-// Load stripe outside the component
-//process.env.STRIPE_PUBLISHABLE_KEY;
-const stripePromise = loadStripe(
-  "pk_test_51OdBm3SAISpOZ71vyUcpPJcRziTgZo5eautuK97IC3yZNUBaBivwDPg8EKGhOH4QgNLz319HPrLFyxmEqIWfL4hY00B2BvMgQc"
-); // Replace with your Stripe publishable key
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY); // Replace with your Stripe publishable key
 
 const Payment = () => {
   const dispatch: any = useDispatch();
   const { payment } = useSelector((state: any) => state.order);
+  const { totalAmount } = useSelector((state: any) => state.cart.cartItems);
 
   useEffect(() => {
-    dispatch(processPayment(123));
+    dispatch(processPayment({ totalAmount }));
   }, []);
 
   const appearance: any = {
