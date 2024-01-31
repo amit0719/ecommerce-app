@@ -4,9 +4,8 @@ import { Document, Schema, model } from "mongoose";
 interface ICategory extends Document {
   name: string;
   description: string;
-  parentCategory?: Schema.Types.ObjectId | null;
+  isFeatured: boolean;
   subcategories: Schema.Types.ObjectId[];
-  // Other attributes if needed
 }
 
 // Schema definition
@@ -21,10 +20,9 @@ const categorySchema = new Schema<ICategory>(
       type: String,
       default: "",
     },
-    parentCategory: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
-      default: null,
+    isFeatured: {
+      type: Boolean,
+      default: false,
     },
     subcategories: [
       {
@@ -32,7 +30,6 @@ const categorySchema = new Schema<ICategory>(
         ref: "Category",
       },
     ],
-    // Other attributes you might need, e.g., imageURL, isActive, createdAt, updatedAt, etc.
   },
   { timestamps: true }
 );

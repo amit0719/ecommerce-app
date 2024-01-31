@@ -6,7 +6,7 @@ export interface User extends Document {
   email: string;
   phone: number;
   address: string;
-  otp: string | null;
+  otp: number | null;
   otpExpiration: Date | null;
 }
 
@@ -16,7 +16,7 @@ const UserSchema: Schema = new Schema({
   email: { type: String, required: true },
   phone: { type: String },
   address: { type: String },
-  otp: { type: String, default: null },
+  otp: { type: Number, default: null },
   otpExpiration: { type: Date, default: null },
 });
 

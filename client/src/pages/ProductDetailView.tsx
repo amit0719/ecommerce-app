@@ -1,123 +1,68 @@
 import { useParams } from "react-router-dom";
-import { appData } from "../data";
-import StarRating from "../components/StarRating/StarRating";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, fetchCartItems } from "../appState/actions/cartActions";
+import { useEffect } from "react";
+import { fetchProductById } from "../appState/actions/productActions";
 
 const ProductDetailView = () => {
-  const { id } = useParams(); // Retrieve the product ID from the URL
-  // const [product, setProduct] = useState(appData.products[0]);
+  const dispatch: any = useDispatch();
+  const { id } = useParams();
+  const { product } = useSelector((state: any) => state.products);
+  const { isAuthenticated, userId } = useSelector((state: any) => state.auth);
+  const { name, image_url: imageUrl, price, description } = product ?? {};
 
-  const {
-    name,
-    imageUrl,
-    price,
-    discountPrice,
-    description,
-    details = [],
-    averageRating,
-    reviewsCount,
-  } = appData.products[0];
-
-  // // Simulated fetch function to get product details based on ID
-  // const fetchProduct = (id) => {
-  //   // Replace this with your actual fetch logic
-  //   const fetchedProduct = {
-  //     id: id,
-  //     name: "Sample Product",
-  //     mainImage: "main-image-url.jpg",
-  //     additionalImages: ["image-url1.jpg", "image-url2.jpg", "image-url3.jpg"],
-  //     price: 50,
-  //     discountPrice: 45,
-  //     description: "Product description",
-  //     details: ["Detail 1", "Detail 2", "Detail 3"],
-  //     averageRating: 4.5,
-  //     reviewsCount: 20,
-  //     recommendedProducts: [], // Assuming an empty array for recommended products
-  //   };
-  //   setProduct(fetchedProduct);
-  // };
-
-  // useEffect(() => {
-  //   fetchProduct(productId); // Fetch product details when the component mounts
-  // }, [productId]);
+  useEffect(() => {
+    if (!product && id) {
+      dispatch(fetchProductById(id));
+    }
+  }, [product, id]);
 
   const handleAddToCart = () => {
-    // Logic to add the item to the cart
-  };
-
-  const handleCheckout = () => {
-    // Logic to proceed to checkout
+    if (isAuthenticated) {
+      console.log("hey clicked");
+      dispatch(addToCart({ productId: id, userId }));
+      dispatch(fetchCartItems({ userId }));
+    }
   };
 
   return (
-    <div className="container">
+    <Container className="mt-4">
       {id && (
-        <div className="row">
-          <div className="col-md-6">
-            <h1>{name}</h1>
-            {/* Product image */}
+        <Row>
+          <Col md={6} className="border-end">
             <img
               src={imageUrl}
-              className="img-fluid mb-3"
+              className="img-fluid"
               alt={`Product: ${name}`}
             />
-            {/* Price, rating, and buttons */}
-            <div className="d-flex flex-column align-items-start">
-              {discountPrice && (
-                <p>
-                  <span>Special price:</span>
-                  <span>
-                    ${discountPrice} (
-                    {Math.round(((price - discountPrice) / price) * 100)}% off)
-                  </span>
-                </p>
-              )}
-              {discountPrice && (
-                <p>
-                  <del>${price}</del>
-                </p>
-              )}
-              <div className="mb-3">
-                <StarRating rating={averageRating} />
-                <span> ({reviewsCount} Ratings)</span>
+          </Col>
+          <Col md={6}>
+            <div className="d-flex flex-column justify-content-between h-100">
+              <div>
+                <h3>{name}</h3>
+                <p>Price: ${price}</p>
+                <p>{description}</p>
               </div>
-              <div
-                className="d-flex justify-content-between"
-                style={{ width: "100%", gap: "8px" }}
-              >
-                <button
-                  className="btn btn-primary mr-2"
+
+              <div>
+                <Button
+                  variant="primary"
                   onClick={handleAddToCart}
-                  style={{
-                    backgroundColor: "#D10024",
-                    color: "white",
-                    flex: "1",
-                  }}
+                  disabled={!isAuthenticated}
+                  style={{ backgroundColor: "#D10024" }}
+                  title={
+                    isAuthenticated ? "" : "Please login to add items to cart"
+                  }
                 >
                   Add to Cart
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={handleCheckout}
-                  style={{ flex: "1" }}
-                >
-                  Proceed to Checkout
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
-          <div className="col-md-6">
-            {/* Detailed product information */}
-            <h2>Product Details</h2>
-            <p>{description}</p>
-            <ul>
-              {details.map((detail, index) => (
-                <li key={index}>{detail}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          </Col>
+        </Row>
       )}
-    </div>
+    </Container>
   );
 };
 

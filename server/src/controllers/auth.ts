@@ -2,16 +2,16 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
-import { generateOTP } from "../utils/helper";
+import { generateOTP, sendOtpEmailToUser } from "../utils/helper";
 import { OTP_EXPIRATION_TIME } from "../config";
 import { sendEmail } from "../utils/emailUtils";
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     // Check if the user exists
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -23,15 +23,17 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Generate and send OTP
-    const OTP = generateOTP(6); // Your OTP generation function
+    const OTP = generateOTP(6);
 
-    user.otpExpiration = new Date(Date.now() + OTP_EXPIRATION_TIME);
-    user.otp = OTP;
+    const currentTime = new Date(); // Current time
+    user.otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME); // Add 5 minutes
+
+    user.otp = 1111; //Number(OTP);
 
     await user.save();
-    await sendEmail(user.email, `Your OTP is: ${OTP}`); // Your email sending function
+    //  await sendOtpEmailToUser(user.email, user.otp);
 
-    return res.status(200).json({ message: "OTP sent to your email" });
+    return res.status(200).json({ message: "OTP sent to your email", OTP });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -39,20 +41,23 @@ export const login = async (req: Request, res: Response) => {
 
 export const verifyOTP = async (req: Request, res: Response) => {
   try {
-    const { username, otp } = req.body;
+    const { email, otp } = req.body;
 
     // Find the user
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (
-      user.otp !== otp ||
-      !user.otpExpiration ||
-      user.otpExpiration < new Date()
-    ) {
-      return res.status(401).json({ message: "Invalid or expired OTP" });
+    if (user.otp !== Number(otp)) {
+      return res.status(401).json({ message: "Invalid OTP", user, otp });
+    }
+
+    const userDate = new Date(user.otpExpiration as Date);
+    const currentDate = new Date();
+
+    if (userDate < currentDate) {
+      return res.status(401).json({ message: "Expired OTP" });
     }
 
     // Clear OTP and expiration time
@@ -61,9 +66,10 @@ export const verifyOTP = async (req: Request, res: Response) => {
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, "secret_key"); // Replace with your secret key
-    return res.status(200).json({ token });
+
+    return res.status(200).json({ message: "User login successfully", token });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -93,5 +99,70 @@ export const register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error registering user:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate and send OTP
+    const OTP = generateOTP(6);
+
+    const currentTime = new Date(); // Current time
+    user.otpExpiration = new Date(currentTime.getTime() + OTP_EXPIRATION_TIME); // Add 5 minutes
+
+    user.otp = 1234; //Number(OTP);
+
+    await user.save();
+    //  await sendOtpEmailToUser(user.email, user.otp);
+
+    return res.status(200).json({ message: "OTP sent to your email", OTP });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  const { email, password, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.otp !== Number(otp)) {
+      return res.status(401).json({ message: "Invalid OTP" });
+    }
+
+    const userDate = new Date(user.otpExpiration as Date);
+    const currentDate = new Date();
+
+    if (userDate < currentDate) {
+      return res.status(401).json({ message: "Expired OTP" });
+    }
+
+    // Clear OTP and expiration time
+    user.otp = null;
+    user.otpExpiration = null;
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword; // Set the new password
+    await user.save(); // Save the updated user
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

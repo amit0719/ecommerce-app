@@ -1,19 +1,59 @@
 import { Request, Response } from "express";
 import Order from "../models/order";
+import stripe from "stripe";
+import { generateOrderId } from "../utils/helper";
+
+const stripeClient = new stripe(
+  "sk_test_51OdBm3SAISpOZ71vHekzrnTbMMqC4zTZsdhJLbtPzGRJbWAuMdlrQRZSvcFd74BJSfNDnHvByXNduqRcYXPigUJH00qTBz7P2T"
+);
+
+export const processPayment = async (req: Request, res: Response) => {
+  const { totalAmount } = req.body;
+
+  try {
+    //Use Stripe API to confirm the payment with the paymentMethodId
+    const paymentIntent = await stripeClient.paymentIntents.create({
+      amount: totalAmount,
+      currency: "inr",
+      description: "payment",
+      payment_method_types: ["card"],
+      confirm: true,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    // respond with the client secret and id of the new paymentintent
+    if (paymentIntent.client_secret) {
+    }
+
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error("Error occurred while processing payment:", error);
+    return res.status(500).json({
+      error: "An error occurred while processing payment",
+      error1: error,
+    });
+  }
+};
 
 // Controller to create a new order
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { orderID, customer, items, totalAmount, status } = req.body;
+    const { userId, items, totalAmount } = req.body;
+    const orderId = generateOrderId();
+
     const newOrder = new Order({
-      orderID,
-      customer,
+      userId,
       items,
       totalAmount,
-      status,
     });
+
     const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
+
+    res.status(200).json(savedOrder._id);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

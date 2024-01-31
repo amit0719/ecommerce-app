@@ -1,11 +1,11 @@
 import axiosInstance from "../../services/axios/axiosInstance";
 
 // Fetch cart items action
-export const fetchCartItems = () => {
+export const fetchCartItems = (params) => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_CART_ITEMS_REQUEST" });
     try {
-      const response = await axiosInstance.get("/api/carts");
+      const response = await axiosInstance.get("/carts", { params });
       dispatch({ type: "FETCH_CART_ITEMS_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({
@@ -21,7 +21,7 @@ export const addToCart = (itemData: any) => {
   return async (dispatch: any) => {
     dispatch({ type: "ADD_TO_CART_REQUEST" });
     try {
-      const response = await axiosInstance.post("/api/carts/add", itemData);
+      const response = await axiosInstance.post("/carts/add", itemData);
       dispatch({ type: "ADD_TO_CART_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({ type: "ADD_TO_CART_FAILURE", payload: error.response.data });
@@ -30,12 +30,14 @@ export const addToCart = (itemData: any) => {
 };
 
 // Remove item from cart action
-export const removeFromCart = (itemId: any) => {
+export const removeFromCart = (userId: string, productId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
-      await axiosInstance.post("/api/carts/remove", { itemId });
-      dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: itemId });
+      await axiosInstance.post("/carts/remove", { userId, productId });
+      await dispatch(fetchCartItems({ userId }));
+
+      dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
     } catch (error: any) {
       dispatch({
         type: "REMOVE_FROM_CART_FAILURE",
@@ -46,14 +48,22 @@ export const removeFromCart = (itemId: any) => {
 };
 
 // Update cart item action
-export const updateCartItem = (itemId: any, updatedItemData: any) => {
+export const updateCartItem = (
+  userId: string,
+  productId: string,
+  quantity: any
+) => {
   return async (dispatch: any) => {
     dispatch({ type: "UPDATE_CART_ITEM_REQUEST" });
     try {
-      const response = await axiosInstance.post("/api/carts/update", {
-        itemId,
-        updatedItemData,
+      const response = await axiosInstance.post("/carts/update", {
+        userId,
+        productId,
+        quantity,
       });
+
+      await dispatch(fetchCartItems({ userId }));
+
       dispatch({ type: "UPDATE_CART_ITEM_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({

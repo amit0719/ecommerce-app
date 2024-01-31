@@ -21,7 +21,8 @@ export const fetchProductById = (productId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: "FETCH_PRODUCT_REQUEST" });
     try {
-      const response = await axiosInstance.get(`/api/products/${productId}`);
+      const response = await axiosInstance.get(`/products/${productId}`);
+      console.log("hey response");
       dispatch({ type: "FETCH_PRODUCT_SUCCESS", payload: response.data });
     } catch (error: any) {
       dispatch({ type: "FETCH_PRODUCT_FAILURE", payload: error.response.data });
@@ -34,7 +35,7 @@ export const fetchProductById = (productId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "CREATE_PRODUCT_REQUEST" });
 //     try {
-//       const response = await axiosInstance.post("/api/products", productData);
+//       const response = await axiosInstance.post("/products", productData);
 //       dispatch({ type: "CREATE_PRODUCT_SUCCESS", payload: response.data });
 //     } catch (error) {
 //       dispatch({
@@ -51,7 +52,7 @@ export const fetchProductById = (productId: string) => {
 //     dispatch({ type: "UPDATE_PRODUCT_REQUEST" });
 //     try {
 //       const response = await axiosInstance.put(
-//         `/api/products/${productId}`,
+//         `/products/${productId}`,
 //         updatedProductData
 //       );
 //       dispatch({ type: "UPDATE_PRODUCT_SUCCESS", payload: response.data });
@@ -69,7 +70,7 @@ export const fetchProductById = (productId: string) => {
 //   return async (dispatch) => {
 //     dispatch({ type: "DELETE_PRODUCT_REQUEST" });
 //     try {
-//       await axiosInstance.delete(`/api/products/${productId}`);
+//       await axiosInstance.delete(`/products/${productId}`);
 //       dispatch({ type: "DELETE_PRODUCT_SUCCESS", payload: productId });
 //     } catch (error) {
 //       dispatch({

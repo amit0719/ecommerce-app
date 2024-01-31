@@ -1,53 +1,48 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../appState/actions/authActions";
+import Brand from "../Brand";
+import User from "../User";
+import Cart from "../cart";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state: any) => state.auth);
+  const { cartItems = [] } = useSelector((state: any) => state.cart.cartItems);
+  const totalQuantity = isAuthenticated
+    ? cartItems.reduce((acc, item) => acc + item.quantity, 0)
+    : 0;
+
+  const handleLoginLogout = () => {
+    if (isAuthenticated) {
+      dispatch(logout());
+      navigate("/");
+    }
+  };
+
   return (
-    <div className="container-fluid bg-dark py-4">
-      <div className="row align-items-center">
-        {/* Brand name */}
-        <div className="col-md-4 text-center text-md-left">
-          <h1 className="m-0 text-white">Electro</h1>
+    <Container fluid className="bg-dark py-4 px-4">
+      <div className="d-flex flex-row align-items-center justify-content-between">
+        <div className="text-center ">
+          <Brand />
         </div>
-
-        {/* Search component */}
-        <div className="col-md-4 text-center">
-          {/* Replace this input with your search component */}
-          <input type="text" className="form-control" placeholder="Search..." />
-        </div>
-
-        {/* User login */}
-
-        <div className="col-md-2 text-center">
-          <div className="text-white">
-            <i className="fas fa-user-circle fa-2x"></i>
-            <Link to={"login"}>
-              <p className="m-0">Login</p>
-            </Link>
-          </div>
-        </div>
-
-        {/* Cart */}
-        <div className="col-md-2 text-center d-flex align-items-center">
-          <div className="text-white position-relative">
-            <i className="fas fa-shopping-cart fa-2x"></i>
-            <p className="m-0">Your Cart</p>
-            {/* Cart count badge */}
-            <span
-              className="badge badge-pill badge-danger position-absolute"
-              style={{
-                top: "-8px",
-                right: "-8px",
-                color: "#FFF",
-                backgroundColor: "#D10024",
-              }}
-            >
-              3
-            </span>
-          </div>
+        <div
+          className="d-flex align-items-center justify-content-between"
+          style={{ gap: "20px" }}
+        >
+          <User
+            isAuthenticated={isAuthenticated}
+            handleLoginLogout={handleLoginLogout}
+          />
+          <Cart
+            isAuthenticated={isAuthenticated}
+            totalQuantity={totalQuantity}
+          />
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
